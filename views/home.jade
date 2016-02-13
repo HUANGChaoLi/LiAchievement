@@ -1,0 +1,180 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    link(rel='stylesheet', href='./css/fontawesome/css/font-awesome.css')
+    link(rel='stylesheet', href='./css/home.css')
+    script(src='./js/jquery.js')
+    script(src='./js/validator.js')
+    script(src='./js/home.js')
+    script(src='js/angular/angular.js')
+    script(src='js/blog/app.js')
+    title
+  body
+    .nav
+      a(href='#')
+        i.fa.fa-user
+      |  Hello World ! 
+      i.fa.fa-hand-o-right
+      |  I am a blog system. 
+      i.fa.fa-rss
+      #accountButton.index-wrapper
+        #account.index-button 查看账户
+        #logout.index-button 退出登录
+    .body-wrapper
+      #index-wrapper.index-wrapper
+        #signup.index-button 注册账户
+        #signin.index-button 登陆账户
+      // user manager app
+      #userDetail(ng-app='userApp')
+        #signupForm.signup-wrapper.hide(ng-controller='signupCtrl')
+          form(method='post')
+            .input
+              i.fa.fa-user
+              | 用户名 : 
+              input(type='text', name='username', ng-model='user.username')
+              .error
+            .input
+              i.fa.fa-key
+              | 密码 : 
+              input(type='password', name='password', ng-model='user.password')
+              .error
+            .input
+              i.fa.fa-key
+              | 重复密码 : 
+              input(type='password', name='rePassword', ng-model='user.rePassword')
+              .error
+            .input
+              i.fa.fa-graduation-cap
+              | 学号 : 
+              input(type='text', name='sid', ng-model='user.sid')
+              .error
+            .input
+              i.fa.fa-phone-square
+              | 电话 : 
+              input(type='text', name='phone', ng-model='user.phone')
+              .error
+            .input
+              i.fa.fa-envelope
+              | 邮箱 : 
+              input(type='text', name='email', ng-model='user.email')
+              .error
+            .submit-button
+              input(type='reset', value='Reset')
+            .submit-button
+              input(type='submit', value='Submit', ng-click='submit($event.target)')
+            .form-after x
+        #signinForm.signup-wrapper.signin-wrapper.hide(ng-controller='signinCtrl')
+          form(method='post')
+            .input
+              i.fa.fa-user
+              | 用户名 : 
+              input(type='text', name='username', ng-model='user.username')
+              .error
+            .input
+              i.fa.fa-key
+              | 密码 : 
+              input(type='password', name='password', ng-model='user.password')
+              .error
+            .submit-button
+              input(type='reset', value='Reset')
+            .submit-button
+              input(type='submit', value='Submit', ng-click='submit($event.target)')
+            .form-after x
+        #accountForm.signup-wrapper.hide
+          form
+            .input
+              i.fa.fa-user
+              | 用户 : 
+              input(type='text', name='username', disabled='disabled', value=user.username)
+              .error
+            .input
+              i.fa.fa-graduation-cap
+              | 学号 : 
+              input(type='text', name='studentId', disabled='disabled', value=user.sid)
+              .error
+            .input
+              i.fa.fa-phone-square
+              | 电话 : 
+              input(type='text', name='phone', disabled='disabled', value=user.phone)
+              .error
+            .input
+              i.fa.fa-envelope
+              | 邮箱 : 
+              input(type='text', name='email', disabled='disabled', value=user.email)
+              .error
+            .form-after x
+      // blog comment show
+      #blogDetail
+        #allBlog(ng-app='blogApp')
+          div(ng-controller='blogCtrl')
+            #blogButton.index-wrapper
+              #flush.index-button(ng-click='flush()') Flush
+              #addBlogs.index-button(ng-click='addBlog()') Add a new Blog
+              #search
+                i.fa.fa-search-plus
+                input.search(type='text', placeholder='To Search', ng-model='search')
+            ul
+              li.blog(ng-repeat='blog in Blogs| filter:search', ng-show='checkPage($index)')
+                h2.blogH(ng-show='!blog.hide') {{blog.title}}
+                h2.blogH(ng-show='blog.hide') 该内容已经被管理员隐藏
+                .blogUnit
+                  .Creator(ng-data-id="{{blog.id}}" ng-click='editBlog($event.target)', ng-mouseover='creatorMouse($event.target)')
+                    | {{blog.user}}
+                    i.fa.fa-lock(title='隐藏', ng-click='lockBlog($event.target)', ng-show='!blog.hide&&isAdmin')
+                    i.fa.fa-unlock(title='取消隐藏', ng-click='unlockBlog($event.target)', ng-show='blog.hide&&isAdmin')
+                  p.blogP(ng-show='!blog.hide') {{blog.content}}
+                  p.blogP(ng-show='blog.hide') 该内容已经被管理员隐藏
+                .commentHr(ng-click='addComment($event.target)')
+                  | comment
+                  i.fa.fa-commenting-o
+                div
+                  .blogUnit(ng-repeat='comment in blog.comments')
+                    .commentUser(ng-data-id="{{comment.id}}" ng-click='editComment($event.target)', ng-mouseover='commentMouse($event.target)')
+                      | {{comment.user}}
+                      i.fa.fa-lock(title='隐藏', ng-click='lockComment($event.target)', ng-show='!comment.hide&&isAdmin')
+                      i.fa.fa-unlock(title='取消隐藏', ng-click='unlockComment($event.target)', ng-show='comment.hide&&isAdmin')
+                    p.blogP(ng-show='!comment.hide') {{comment.content}}
+                    p.blogP(ng-show='comment.hide') 该内容已经被管理员隐藏
+            // BLOG
+            div
+              #addComment.edit
+                h2 Write a new Comment
+                p.font Body:
+                textarea(ng-model='paragraph', name='para')
+                p
+                  button(ng-click='add_comment($event.target)') Submit Comment
+                .edit-after x
+              #editComment.edit
+                h2 Edit this Comment
+                p.font Body:
+                textarea(ng-model='paragraph', name='para')
+                p
+                  button(ng-click='edit_comment($event.target)') Submit Comment
+                  button(ng-click='delete_comment($event.target)') Delete Comment
+                .edit-after x
+              #addBlog.edit
+                h2 Add a new Blog
+                p.font Title:
+                input(ng-model='titles', name='title')
+                p.font Body:
+                textarea(ng-model='paragraph', name='para')
+                p
+                  button(ng-click='add_blog($event.target)') Submit Blog
+                .edit-after x
+              #editBlog.edit
+                h2 Edit this Blog
+                p.font Title:
+                input(ng-model='titles', name='title')
+                p.font Body:
+                textarea(ng-model='paragraph', name='para')
+                p
+                  button(ng-click='edit_blog($event.target)') Submit Blog
+                  button(ng-click='delete_blog($event.target)') Delete Blog
+                .edit-after x
+            // Page
+            .page-wrapper
+              ul
+                li.page(ng-click='pageClick($event.target)') &lt;
+                li.page(ng-repeat='num in pageNum', ng-click='pageClick($event.target)') {{num}}
+                li.page(ng-click='pageClick($event.target)') &gt;

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8'>
+    <title>Admin</title>
+    <link href="./libs/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/fontawesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="./css/admin.css" rel="stylesheet">
+    <script src="./libs/jquery.js"></script>
+    <script src="./js/validator.js"></script>
+    <script src="./libs/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    <script src='./js/angular/angular.js'></script>
+    <script src='./js/admin.js'></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+       <div class="navbar-header nav-info">
+          <a id="project" class="navbar-brand" href="#">My Achievement</a>
+       </div>
+       <a id="logout" class="navbar-brand pull-right" href="logout">退出登录</a>
+    </nav>
+    <div class="container-fluid" ng-app='userApp'>
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="asign-right">
+            <button class="btn btn-defalut btn-large btn-success" type="button" data-toggle="modal" data-target="#addUser"><h5>单位添加用户</h5></button>
+            <button class="btn btn-large btn-defalut btn-danger" type="button" data-toggle="modal" data-target="#deleteUser"><h5>单位删除用户</h5></button>
+            <button class="btn btn-defalut btn-large btn-success" type="button" data-toggle="modal" data-target="#addUsers"><h5>批量添加用户</h5></button>
+            <button class="btn btn-large btn-defalut btn-danger" type="button" data-toggle="modal" data-target="#deleteUsers"><h5>批量删除用户</h5></button>
+          </div>
+        </div>
+      </div>
+      <div class="row-fluid" ng-controller='Users.list'>
+        <div class="span12">
+          <div class="panel panel-default">
+            <div class="panel-heading"><button type="button" id="reflesh" class="btn btn-info btn-lg btn-block" reflesh-users><strong><i class="fa fa-refresh"></i>用户列表</strong></button></div>
+            <div class="panel-body"><input type="text" class="form-control" ng-model='search'  placeholder="搜索"></div>
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th><h4><strong>序号</h4></strong></th>
+                  <th><h4><strong>用户名</h4></strong></th>
+                  <th><h4><strong>姓名</h4></strong></th>
+                  <th><h4><strong>邮箱</h4></strong></th>
+                  <th><h4><strong>权限</h4></strong></th>
+                  <th><h4><strong>处理</h4></strong></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat='user in users| filter:search'>
+                  <td>{{$index + 1}}</td>
+                  <td>{{user.username}}</td>
+                  <td>{{user.truename}}</td>
+                  <td>{{user.email}}</td>
+                  <td>{{user.limit}}</td>
+                  <td>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editUser" get-user>编辑</button>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editPassword" get-username>更改密码</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteUser"  get-username>删除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 模拟框 -->
+        <div>
+            <!-- 添加单位用户 -->
+          <div class="modal fade" id="addUser" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <button type="button" class="close" 
+                       data-dismiss="modal" aria-hidden="true">
+                          &times;
+                    </button>
+                    <h4 class="modal-title">
+                       添加一位用户
+                    </h4>
+                 </div>
+                 <div class="modal-body">
+                  <form class="bs-example bs-example-form" role="form">
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-user"></i>&nbsp;</span>
+                      <input type="text" class="form-control" name="username" placeholder="用户名" ng-model='user.username' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                      <input type="text" class="form-control" name="password" placeholder="密码" ng-model='user.password' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                      <input type="text" class="form-control" name="rePassword" placeholder="重复密码" ng-model='user.rePassword' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-user"></i>&nbsp;</span>
+                      <input type="text" class="form-control" name="truename" placeholder="姓名" ng-model='user.truename' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                       <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                       <input type="text" class="form-control" name="email" placeholder="邮箱" ng-model='user.email' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                       <span class="input-group-addon"><i class="fa fa-lock" title="权限"></i>&nbsp;</span>
+                        <select class="form-control" name="limit" ng-model='user.limit' valid>
+                          <option>1(老师)</option>
+                          <option>2(老师助理)</option>
+                          <option>3(学生)</option>
+                        </select>
+                    </div>
+                  </form>
+                 </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" 
+                       data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" add-user>
+                       添加该用户
+                    </button>
+                    <div class="alert alert-danger error" role="alert"></div>
+                 </div>
+              </div>
+            </div>
+          </div>
+            <!-- 删除单位用户 -->
+          <div class="modal fade" id="deleteUser" aria-hidden="true">
+           <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <button type="button" class="close" 
+                       data-dismiss="modal" aria-hidden="true">
+                          &times;
+                    </button>
+                    <h4 class="modal-title">
+                       删除一位已知用户
+                    </h4>
+                 </div>
+                 <div class="modal-body">
+                  <form>
+                    <div class="input-group input-group-lg">
+                       <span class="input-group-addon"><i class="fa fa-user-times"></i></span>
+                       <input type="text" name="username" class="form-control" placeholder="用户名" ng-model='editUser.username' valid>
+                    </div>
+                  </form>
+                 </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" 
+                       data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" delete-user>
+                       删除该用户
+                    </button>
+                    <div class="alert alert-danger error" role="alert"></div>
+                 </div>
+              </div>
+            </div>
+          </div>
+            <!-- 添加批量用户 -->
+          <div class="modal fade" id="addUsers" aria-hidden="true">
+           <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <button type="button" class="close" 
+                       data-dismiss="modal" aria-hidden="true">
+                          &times;
+                    </button>
+                    <h4 class="modal-title">
+                       添加批量用户(excel表格)
+                    </h4>
+                 </div>
+                 <div class="modal-body">
+                  <form>
+                    <div class="input-group input-group-lg">
+                       <button type="button" class="btn btn-default btn-lg upload"><input type="file" class="file"></button>
+                    </div>
+                  </form>
+                 </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" 
+                       data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                       添加文件中所有的用户
+                    </button>
+                 </div>
+              </div>
+            </div>
+          </div>
+            <!-- 删除批量用户 -->
+          <div class="modal fade" id="deleteUsers" aria-hidden="true">
+           <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <button type="button" class="close" 
+                       data-dismiss="modal" aria-hidden="true">
+                          &times;
+                    </button>
+                    <h4 class="modal-title">
+                       删除批量用户(excel表格)
+                    </h4>
+                 </div>
+                 <div class="modal-body">
+                  <form>
+                    <div class="input-group input-group-lg">
+                       <button type="button" class="btn btn-default btn-lg upload"><input type="file" class="file"></button>
+                    </div>
+                  </form>
+                 </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" 
+                       data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                       删除该文件中匹配的用户
+                    </button>
+                 </div>
+              </div>
+            </div>
+          </div>
+            <!-- 编辑单位用户 -->
+          <div class="modal fade" id="editUser" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <button type="button" class="close" 
+                       data-dismiss="modal" aria-hidden="true">
+                          &times;
+                    </button>
+                    <h4 class="modal-title">
+                       编辑一位用户
+                    </h4>
+                 </div>
+                 <div class="modal-body">
+                  <form class="bs-example bs-example-form" role="form">
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-user"></i>&nbsp;</span>
+                      <input type="text" name='username' class="form-control" placeholder="用户名" disabled="disable" ng-model='editUser.username' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-user"></i>&nbsp;</span>
+                      <input type="text" name='truename' class="form-control" placeholder="姓名" ng-model='editUser.truename' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                       <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                       <input type="text" name='email' class="form-control" placeholder="邮箱" ng-model='editUser.email' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                       <span class="input-group-addon"><i class="fa fa-lock" title="权限"></i>&nbsp;</span>
+                        <select class="form-control" name="limit" ng-model='editUser.limit' valid>
+                          <option>1(老师)</option>
+                          <option>2(老师助理)</option>
+                          <option>3(学生)</option>
+                        </select>
+                    </div>
+                  </form>
+                 </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" 
+                       data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" edit-user>
+                       更改该用户信息
+                    </button>
+                    <div class="alert alert-danger error" role="alert"></div>
+                 </div>
+              </div>
+            </div>
+          </div>
+            <!-- 编辑单位用户密码 -->
+          <div class="modal fade" id="editPassword" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <button type="button" class="close" 
+                       data-dismiss="modal" aria-hidden="true">
+                          &times;
+                    </button>
+                    <h4 class="modal-title">
+                       编辑一位用户密码
+                    </h4>
+                 </div>
+                 <div class="modal-body">
+                  <form class="bs-example bs-example-form" role="form">
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-user"></i>&nbsp;</span>
+                      <input type="text" name='username' class="form-control" placeholder="用户名" disabled="disable" ng-model='editUser.username' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                      <input type="text" name='password' class="form-control" placeholder="密码" ng-model='editUser.password' valid>
+                    </div>
+                    <div class="input-group input-group-lg">
+                      <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                      <input type="text" name='rePassword' class="form-control" placeholder="重复密码" ng-model='editUser.rePassword' valid>
+                    </div>
+                  </form>
+                 </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" 
+                       data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" edit-user-password>
+                       更改该用户密码
+                    </button>
+                    <div class="alert alert-danger error" role="alert"></div>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
