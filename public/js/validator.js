@@ -48,7 +48,7 @@ var validator = {
   },
 
   isLimitValid: function (limit){
-    return this.form.limit.status = (limit != "");
+    return this.form.limit.status = (limit == "老师" || limit == "老师助理" || limit == "学生");
   },
 
   isFieldValid: function(fieldname, value){

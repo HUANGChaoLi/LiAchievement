@@ -47,7 +47,7 @@ module.service( 'Users', [ '$rootScope', '$http' , function( $rootScope, $http )
       },
 
       editUserPassword: function ( user, callback ) {
-        $http.post('/editUser', user).
+        $http.post('/editUserPassword', user).
           success(function (success_res) {
             $rootScope.$broadcast( 'users.update' );
             callback();
@@ -106,7 +106,11 @@ module.directive( "addUser", [ 'Users', function( Users ) {
     restrict: "A",
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        element.parents('.modal-content').find('input, select').eq(0).blur();
+        for (var key in scope.user) {
+          if (scope.user.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.user[key]);
+          }
+        }
         if (validator.isFormValid()) {
           Users.addUser(angular.copy(scope.user), function(err) {
             if (err) {
@@ -153,7 +157,11 @@ module.directive( "editUser", [ 'Users', function( Users ) {
     restrict: "A",
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        element.parents('.modal-content').find('input, select').eq(0).blur();
+        for (var key in scope.editUser) {
+          if (scope.editUser.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.editUser[key]);
+          }
+        }
         if (validator.isEditValid()) {
           Users.editUser(scope.editUser, function (err){
             if (err) {
