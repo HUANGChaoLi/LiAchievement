@@ -17,6 +17,36 @@ module.exports = function (db) {
       return registry.insert(user);
     },
 
+    addUsers: function (usersarr) {
+      console.log(usersarr)
+      for (var i = 0; i < usersarr.length; i++) {
+        (function (user) {
+          for (var key in user) {
+            if (user.hasOwnProperty(key)) {
+              validator.isFieldValid(key, user[key]);
+            }
+          }
+          if (validator.isFormValid()) {
+            registry.findOne({username: user.username}).then(function (existedUser) {
+              if (existedUser) {
+                console.log(user.username + '用户名已存在, 注册失败.');
+              } else {
+                delete user.rePassword;
+                var sha1 = crypto.createHash("sha1");
+                sha1.update(user.password);
+                user.password = sha1.digest('hex');
+                registry.insert(user).then(function () {
+                  console.log(user.username + '用户注册成功.');
+                });
+              }
+            });
+          } else {
+            console.log(user.username + '表单有误, 注册失败.');
+          }
+        })(usersarr[i]);
+      }
+    },
+
     deleteUser: function (username) {
       return registry.findOne({username: username}).then(function (user) {
         return new Promise(function (resolve, reject){
@@ -27,6 +57,24 @@ module.exports = function (db) {
           }
         });
       })
+    },
+
+    deleteUsers: function (usernamearrs) {
+      for (var i = 0; i < usernamearrs.length; i++) {
+        (function (usernamearr) {
+          for (var j = 0; j < usernamearr.length; j++) {
+            (function (username) {
+              registry.deleteOne({username: username}).then(function (user) {
+                if (user.result.n > 0) {
+                  console.log('Delete ' + username + ' success.');
+                } else {
+                  console.log('Delete ' + username + ' fail.');
+                }
+              });
+            })(usernamearr[j]);
+          }
+        })(usernamearrs[i]);
+      }
     },
 
     editUser: function (user) {

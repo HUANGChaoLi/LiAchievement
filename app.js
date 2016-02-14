@@ -8,6 +8,18 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 
+var multer  = require('multer')
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+ 
+var upload = multer({ storage: storage })
+
 
 module.exports = function (db) {
   var api = require('./routes/api')(db);
@@ -43,6 +55,10 @@ module.exports = function (db) {
   app.get('/getAllUsers', routes.getAllUsers);
 
   app.post('/uniqueCheck', routes.uniqueCheck);
+
+  app.post('/uploadAddUsers', upload.any(), routes.addUsers);
+
+  app.post('/uploadDeleteUsers', upload.any(), routes.deleteUsers);
 
   app.post('/regist', routes.regist);
 

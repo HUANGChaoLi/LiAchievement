@@ -15,6 +15,7 @@
     "lodash-node": "^3.10.1",
     "mongodb": "^2.1.2",
     "morgan": "~1.6.1",
+    "multer": "^1.1.0",
     "serve-favicon": "~2.3.0",
     "session-file-store": "0.0.24"
   }

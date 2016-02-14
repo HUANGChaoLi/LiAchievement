@@ -1,5 +1,7 @@
 var validator = require("../model/validator");
 var path = require('path');
+var fs = require('fs');
+var xlsx = require('node-xlsx');
 
 module.exports = function (db) {
   var userManager = require("../model/userManager")(db);
@@ -108,6 +110,27 @@ module.exports = function (db) {
       }
     },
 
+    addUsers: function (req, res, next) {
+      if (!req.files[0] || path.extname(req.files[0].originalname) != '.xlsx') {
+        res.send('请上传xlsx类型文件');
+        console.log('文件上传错误');
+      } else {
+        var obj = xlsx.parse('./uploads/' + req.files[0].originalname);
+        console.log(obj[0].data)
+        for (var i = 0; i < obj.length; i++) {
+          (function (userarr){
+            userManager.addUsers(arrToUsers(userarr));
+          })(obj[i].data);
+        }
+        res.redirect('/');
+      }
+      if (req.files[0]) {
+        fs.unlink('./uploads/' + req.files[0].originalname, function (err){
+          console.log('文件删除成功');
+        });
+      }
+    },
+
     deleteUser: function (req, res, next) {
       var username = req.body.username;
       userManager.deleteUser(username).then(function (){
@@ -115,6 +138,27 @@ module.exports = function (db) {
       }).catch(function (err){
         res.status(404).end(err);
       });
+    },
+
+    deleteUsers: function (req, res, next) {
+      console.log(req.files[0]);
+      if (!req.files[0] || path.extname(req.files[0].originalname) != '.xlsx') {
+        res.send('请上传xlsx类型文件');
+        console.log('文件上传错误');
+      } else {
+        var obj = xlsx.parse('./uploads/' + req.files[0].originalname);
+        for (var i = 0; i < obj.length; i++) {
+          (function (usernamearrs){
+            userManager.deleteUsers(usernamearrs);
+          })(obj[i].data);
+        }
+        res.redirect('/');
+      }
+      if (req.files[0]) {
+        fs.unlink('./uploads/' + req.files[0].originalname, function (err){
+          console.log('文件删除成功');
+        });
+      }
     },
 
     signin: function (req, res, next) {
@@ -146,4 +190,27 @@ module.exports = function (db) {
     }
 
   };
+}
+
+// 将数组类型的对象转换为单一对象
+
+function arrToUsers(usersarr) {
+  var users = [];
+  for (var i = 0; i < usersarr.length; i++) {
+    (function (userarr) {
+      users.push(arrToUser(userarr));
+    })(usersarr[i]);
+  }
+  return users;
+}
+
+function arrToUser(userarr) {
+  var user = {};
+  user.username = userarr[0];
+  user.password = userarr[1].toString();
+  user.truename = userarr[2];
+  user.email = userarr[3];
+  user.limit = userarr[4];
+  user.rePassword = user.password;
+  return user;
 }

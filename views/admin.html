@@ -104,9 +104,9 @@
                     <div class="input-group input-group-lg">
                        <span class="input-group-addon"><i class="fa fa-lock" title="权限"></i>&nbsp;</span>
                         <select class="form-control" name="limit" ng-model='user.limit' valid>
-                          <option>1(老师)</option>
-                          <option>2(老师助理)</option>
-                          <option>3(学生)</option>
+                          <option>老师</option>
+                          <option>老师助理</option>
+                          <option>学生</option>
                         </select>
                     </div>
                   </form>
@@ -169,21 +169,21 @@
                        添加批量用户(excel表格)
                     </h4>
                  </div>
-                 <div class="modal-body">
-                  <form>
-                    <div class="input-group input-group-lg">
-                       <button type="button" class="btn btn-default btn-lg upload"><input type="file" class="file"></button>
+                  <form action="/uploadAddUsers" method="post" enctype='multipart/form-data'>
+                    <div class="modal-body">
+                      <div class="input-group input-group-lg">
+                         <button type="button" class="btn btn-default btn-lg upload"><input type="file" class="file" name="userAddFile"></button>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" 
+                         data-dismiss="modal">关闭
+                      </button>
+                      <button type="sbmit" class="btn btn-primary">
+                         添加文件中所有的用户
+                      </button>
                     </div>
                   </form>
-                 </div>
-                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" 
-                       data-dismiss="modal">关闭
-                    </button>
-                    <button type="button" class="btn btn-primary">
-                       添加文件中所有的用户
-                    </button>
-                 </div>
               </div>
             </div>
           </div>
@@ -200,21 +200,21 @@
                        删除批量用户(excel表格)
                     </h4>
                  </div>
-                 <div class="modal-body">
-                  <form>
-                    <div class="input-group input-group-lg">
-                       <button type="button" class="btn btn-default btn-lg upload"><input type="file" class="file"></button>
+                  <form action="/uploadDeleteUsers" method="post" enctype='multipart/form-data'>
+                    <div class="modal-body">
+                      <div class="input-group input-group-lg">
+                         <button type="button" class="btn btn-default btn-lg upload"><input type="file" class="file" name="userDeleteFile"></button>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" 
+                         data-dismiss="modal">关闭
+                      </button>
+                      <button type="submit" class="btn btn-primary">
+                         删除该文件中匹配的用户
+                      </button>
                     </div>
                   </form>
-                 </div>
-                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" 
-                       data-dismiss="modal">关闭
-                    </button>
-                    <button type="button" class="btn btn-primary">
-                       删除该文件中匹配的用户
-                    </button>
-                 </div>
               </div>
             </div>
           </div>
@@ -248,9 +248,9 @@
                     <div class="input-group input-group-lg">
                        <span class="input-group-addon"><i class="fa fa-lock" title="权限"></i>&nbsp;</span>
                         <select class="form-control" name="limit" ng-model='editUser.limit' valid>
-                          <option>1(老师)</option>
-                          <option>2(老师助理)</option>
-                          <option>3(学生)</option>
+                          <option>老师</option>
+                          <option>老师助理</option>
+                          <option>学生</option>
                         </select>
                     </div>
                   </form>
