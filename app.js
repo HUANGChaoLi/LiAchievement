@@ -24,6 +24,7 @@ var upload = multer({ storage: storage })
 module.exports = function (db) {
   var api = require('./routes/api')(db);
   var routes = require('./routes/index')(db);
+  var Class = require('./routes/class')(db);
   console.log("app success!!!");
 
   var app = express();
@@ -71,6 +72,14 @@ module.exports = function (db) {
   app.post('/signin', routes.signin);
 
   app.all('/logout', routes.logout);
+
+  // Class
+
+  app.get('/getAllClasses', Class.getAllClasses);
+
+  app.post('/addClass', Class.addClass);
+
+  app.post('/deleteClass', Class.deleteClass);
 
   // Blog
 

@@ -13,12 +13,12 @@
           h5 删除单位班级
         input.form-control(type='text', ng-model='search', placeholder='搜索')
     .allclass
-      .col-md-6.text-center(ng-repeat='user in users| filter:search')
+      .col-md-6.text-center(ng-repeat='class in classes| filter:search')
         .panel.panel-primary
           .panel-heading
-            h3.panel-title(ng-data-classname='{{user.username}}')
-              | {{user.username}}
-              span.badge.pull-right 管理员:{{user.truename}}
+            h3.panel-title(ng-data-classname='{{class.classname}}')
+              | {{class.classname}}
+              span.badge.pull-right 管理员:{{class.adminname}}
           .panel-body.classbody
             table.table
               thead
@@ -60,15 +60,15 @@ div
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user
-              input.form-control(type='text', name='adminname', value='huangchaoli', disabled='disable')
+              input.form-control(type='text', name='adminname', value='huangchaoli', disabled='disable', valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-home
-              input.form-control(type='text', name='classname', placeholder='班级号', ng-model='class.classname')
+              input.form-control(type='text', name='classname', placeholder='班级号', ng-model='class.classname', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
-          button.btn.btn-primary(type='button', add-class='')
+          button.btn.btn-primary(type='button', add-class)
             | 添加班级
           .alert.alert-danger.error(role='alert')
   // 删除单位班级
@@ -85,14 +85,14 @@ div
               .input-group.input-group-lg
                 span.input-group-addon
                   i.fa.fa-user
-                input#adminname.form-control(type='text', name='adminname', disabled='disable', value='huangchaoli')
+                input#adminname.form-control(type='text', name='adminname', disabled='disable', value='huangchaoli', valid)
               .input-group.input-group-lg
                 span.input-group-addon
                   i.fa.fa-home
-                input.form-control(type='text', name='classname', placeholder='班级号', ng-model='class.classname')
+                input.form-control(type='text', name='classname', placeholder='班级号', ng-model='class.classname', valid)
           .modal-footer
             button.btn.btn-default(type='button', data-dismiss='modal')
               | 关闭
-            button.btn.btn-primary(type='button', delete-class='')
+            button.btn.btn-primary(type='button', delete-class)
               | 删除班级
             .alert.alert-danger.error(role='alert')

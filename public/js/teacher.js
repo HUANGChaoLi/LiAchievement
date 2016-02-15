@@ -44,17 +44,6 @@ module.directive( "getClass", ['$location',  function($location) {
   }
 }]);
 
-module.directive( "addClass", ['$location',  function($location) {
-  return {
-    link: function( scope, element, attrs ) {
-      element.bind( "click", function() {
-        scope.class.adminname = $('#adminname').val();
-        alert(scope.class.adminname + scope.class.classname)
-      });
-    }
-  }
-}]);
-
 module.directive( "getClassname", ['$location', 'currentClass', function($location, currentClass) {
   return {
     link: function( scope, element, attrs ) {
