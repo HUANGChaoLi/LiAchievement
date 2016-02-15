@@ -1,4 +1,4 @@
-var validator = require("../model/validator");
+var validator = require("../public/js/validator");
 var path = require('path');
 var fs = require('fs');
 var xlsx = require('node-xlsx');
@@ -28,7 +28,7 @@ module.exports = function (db) {
 
     index: function(req, res, next) {
         // if (!req.session.user) {
-          res.sendFile('admin.html', { root: path.join(__dirname, '../views') });
+          res.sendFile('teacher.html', { root: path.join(__dirname, '../views') });
           // res.render('admin', {});
         // } else {
         //   res.render('home', {user: req.session.user});
@@ -116,7 +116,6 @@ module.exports = function (db) {
         console.log('文件上传错误');
       } else {
         var obj = xlsx.parse('./uploads/' + req.files[0].originalname);
-        console.log(obj[0].data)
         for (var i = 0; i < obj.length; i++) {
           (function (userarr){
             userManager.addUsers(arrToUsers(userarr));
@@ -141,7 +140,6 @@ module.exports = function (db) {
     },
 
     deleteUsers: function (req, res, next) {
-      console.log(req.files[0]);
       if (!req.files[0] || path.extname(req.files[0].originalname) != '.xlsx') {
         res.send('请上传xlsx类型文件');
         console.log('文件上传错误');

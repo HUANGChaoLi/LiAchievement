@@ -3,9 +3,17 @@
   font-size: 30px;
 }
 
+.btn {
+  margin-right: 5px;
+}
+
 #logout {
   font-size: 25px;
   padding-right: 55px;
+}
+
+.modal-title {
+  text-align: center;
 }
 
 .asign-right {

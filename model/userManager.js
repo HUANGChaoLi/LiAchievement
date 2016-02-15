@@ -18,7 +18,6 @@ module.exports = function (db) {
     },
 
     addUsers: function (usersarr) {
-      console.log(usersarr)
       for (var i = 0; i < usersarr.length; i++) {
         (function (user) {
           for (var key in user) {

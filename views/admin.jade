@@ -14,8 +14,8 @@ html
   body
     nav.navbar.navbar-default(role='navigation')
       .navbar-header.nav-info
-        a#project.navbar-brand(href='#') My Achievement
-      a#logout.navbar-brand.pull-right(href='#') 退出登录
+        a#project.navbar-brand(href='/') My Achievement
+      a#logout.navbar-brand.pull-right(href='logout') 退出登录
     .container-fluid(ng-app='userApp')
       .row-fluid
         .span12
@@ -85,31 +85,31 @@ html
                   form.bs-example.bs-example-form(role='form')
                     .input-group.input-group-lg
                       span.input-group-addon
-                        i.fa.fa-user
-                      input.form-control(type='text', name='username', placeholder='用户名', ng-model='user.username', valid='')
+                        i.fa.fa-user &nbsp;
+                      input.form-control(type='text', name='username', placeholder='用户名', ng-model='user.username', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-key
-                      input.form-control(type='text', name='password', placeholder='密码', ng-model='user.password', valid='')
+                      input.form-control(type='password', name='password', placeholder='密码', ng-model='user.password', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-key
-                      input.form-control(type='text', name='rePassword', placeholder='重复密码', ng-model='user.rePassword', valid='')
+                      input.form-control(type='password', name='rePassword', placeholder='重复密码', ng-model='user.rePassword', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
-                        i.fa.fa-user
-                      input.form-control(type='text', name='truename', placeholder='姓名', ng-model='user.truename', valid='')
+                        i.fa.fa-user &nbsp;
+                      input.form-control(type='text', name='truename', placeholder='姓名', ng-model='user.truename', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-envelope
-                      input.form-control(type='text', name='email', placeholder='邮箱', ng-model='user.email', valid='')
+                      input.form-control(type='text', name='email', placeholder='邮箱', ng-model='user.email', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
-                        i.fa.fa-lock(title='权限')
-                      select.form-control(name='limit', ng-model='user.limit', valid='')
-                        option 1(老师)
-                        option 2(老师助理)
-                        option 3(学生)
+                        i.fa.fa-lock(title='权限') &nbsp;
+                      select.form-control(name='limit', ng-model='user.limit', valid)
+                        option 老师
+                        option 老师助理
+                        option 学生
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal')
                     | 关闭
@@ -130,7 +130,7 @@ html
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-user-times
-                      input.form-control(type='text', name='username', placeholder='用户名', ng-model='editUser.username', valid='')
+                      input.form-control(type='text', name='username', placeholder='用户名', ng-model='editUser.username', valid)
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal')
                     | 关闭
@@ -146,16 +146,16 @@ html
                     | ×
                   h4.modal-title
                     | 添加批量用户(excel表格)
-                .modal-body
-                  form
+                form(action='/uploadAddUsers', method='post', enctype='multipart/form-data')
+                  .modal-body
                     .input-group.input-group-lg
                       button.btn.btn-default.btn-lg.upload(type='button')
-                      input.file(type='file')
-                .modal-footer
-                  button.btn.btn-default(type='button', data-dismiss='modal')
-                    | 关闭
-                  button.btn.btn-primary(type='button')
-                    | 添加文件中所有的用户
+                        input.file(type='file', name='userAddFile')
+                  .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal')
+                      | 关闭
+                    button.btn.btn-primary(type='sbmit')
+                      | 添加文件中所有的用户
           // 删除批量用户
           #deleteUsers.modal.fade(aria-hidden='true')
             .modal-dialog
@@ -165,16 +165,16 @@ html
                     | ×
                   h4.modal-title
                     | 删除批量用户(excel表格)
-                .modal-body
-                  form
+                form(action='/uploadDeleteUsers', method='post', enctype='multipart/form-data')
+                  .modal-body
                     .input-group.input-group-lg
                       button.btn.btn-default.btn-lg.upload(type='button')
-                      input.file(type='file')
-                .modal-footer
-                  button.btn.btn-default(type='button', data-dismiss='modal')
-                    | 关闭
-                  button.btn.btn-primary(type='button')
-                    | 删除该文件中匹配的用户
+                        input.file(type='file', name='userDeleteFile')
+                  .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal')
+                      | 关闭
+                    button.btn.btn-primary(type='submit')
+                      | 删除该文件中匹配的用户
           // 编辑单位用户
           #editUser.modal.fade(aria-hidden='true')
             .modal-dialog
@@ -189,22 +189,22 @@ html
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-user
-                      input.form-control(type='text', name='username', placeholder='用户名', disabled='disable', ng-model='editUser.username', valid='')
+                      input.form-control(type='text', name='username', placeholder='用户名', disabled='disable', ng-model='editUser.username', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
-                        i.fa.fa-user
-                      input.form-control(type='text', name='truename', placeholder='姓名', ng-model='editUser.truename', valid='')
+                        i.fa.fa-user &nbsp;
+                      input.form-control(type='text', name='truename', placeholder='姓名', ng-model='editUser.truename', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-envelope
-                      input.form-control(type='text', name='email', placeholder='邮箱', ng-model='editUser.email', valid='')
+                      input.form-control(type='text', name='email', placeholder='邮箱', ng-model='editUser.email', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
-                        i.fa.fa-lock(title='权限')
-                      select.form-control(name='limit', ng-model='editUser.limit', valid='')
-                        option 1(老师)
-                        option 2(老师助理)
-                        option 3(学生)
+                        i.fa.fa-lock(title='权限') &nbsp;
+                      select.form-control(name='limit', ng-model='editUser.limit', valid)
+                        option 老师
+                        option 老师助理
+                        option 学生
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal')
                     | 关闭
@@ -225,15 +225,15 @@ html
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-user
-                      input.form-control(type='text', name='username', placeholder='用户名', disabled='disable', ng-model='editUser.username', valid='')
+                      input.form-control(type='text', name='username', placeholder='用户名', disabled='disable', ng-model='editUser.username', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-key
-                      input.form-control(type='text', name='password', placeholder='密码', ng-model='editUser.password', valid='')
+                      input.form-control(type='password', name='password', placeholder='密码', ng-model='editUser.password', valid)
                     .input-group.input-group-lg
                       span.input-group-addon
                         i.fa.fa-key
-                      input.form-control(type='text', name='rePassword', placeholder='重复密码', ng-model='editUser.rePassword', valid='')
+                      input.form-control(type='password', name='rePassword', placeholder='重复密码', ng-model='editUser.rePassword', valid)
                 .modal-footer
                   button.btn.btn-default(type='button', data-dismiss='modal')
                     | 关闭

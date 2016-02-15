@@ -67,9 +67,6 @@ module.controller( "Users.list", ['$scope', 'Users', function( $scope, Users ) {
   $scope.user = {};
   $scope.editUser = {};
   $scope.users = Users.users;
-
-
-
 }]);
 
 // 指令
@@ -185,7 +182,11 @@ module.directive( "editUserPassword", [ 'Users', function( Users ) {
     restrict: "A",
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        element.parents('.modal-content').find('input').eq(0).blur();
+        for (var key in scope.editUser) {
+          if (scope.editUser.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.editUser[key]);
+          }
+        }
         if (validator.isEditPasswordValid()) {
           Users.editUserPassword(scope.editUser, function (err){
             if (err) {

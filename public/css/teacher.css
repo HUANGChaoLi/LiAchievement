@@ -1,0 +1,93 @@
+body {
+  min-width: 476px;
+}
+.allclass {
+  margin-top: 20px;
+}
+
+#project {
+  padding-left: 55px;
+  font-size: 30px;
+}
+
+.btn {
+  margin-right: 5px;
+}
+
+.upload {
+  padding: 0;
+}
+
+.file {
+  padding: 10px;
+  min-width: 555px;
+}
+
+.modal-body {
+  overflow: hidden;
+}
+
+.edit-class,
+.add-student {
+  width: 49%;
+  margin-bottom: 12px;
+}
+
+.panel-title {
+  text-align: left;
+}
+
+.classfooter {
+  width: 48%;
+}
+
+.classbody {
+}
+
+
+th {
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  font-size: 1em;
+}
+
+.change-password {
+  cursor: pointer;
+}
+
+.asign-right {
+  text-align: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.asign-right .btn {
+  min-width: 25%;
+  margin: 0 25px 10px 0;
+} 
+
+#logout {
+  font-size: 25px;
+  padding-right: 55px;
+}
+
+.modal-title {
+  text-align: center;
+}
+
+.input-group {
+  margin: 6px;
+}
+
+.modal-body {
+  overflow: hidden;
+}
+
+.error {
+  margin: 10px 0 0 0;
+  text-align: center;
+  padding: 8px;
+}

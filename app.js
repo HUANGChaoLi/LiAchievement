@@ -75,7 +75,7 @@ module.exports = function (db) {
   // Blog
 
   /*检查是否登录*/
-  app.get('*', routes.checkLogin);
+  // app.get('*', routes.checkLogin);
 
   app.get("/data/Blogs", api.getAllBlogs);
 
@@ -100,6 +100,10 @@ module.exports = function (db) {
   app.post('/data/lockComment', api.lockComment);
 
   app.post('/data/unlockComment', api.unlockComment);
+
+  app.get('*', function (req, res, next) {
+    res.render('.'+req.url)
+  });
 
   return app;
 }
