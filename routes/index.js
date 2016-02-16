@@ -204,7 +204,18 @@ function arrToUsers(usersarr) {
   var users = [];
   for (var i = 0; i < usersarr.length; i++) {
     (function (userarr) {
-      users.push(arrToUser(userarr));
+      var user = arrToUser(userarr);
+      for (var key in user) {
+        if (user.hasOwnProperty(key)) {
+          validator.isFieldValid(key, user[key]);
+        }
+      }
+      if (validator.isFormValid()) {
+        delete user.rePassword;
+        users.push(user);
+      } else {
+        console.log(user.username + '表单有误, 注册失败.');
+      }
     })(usersarr[i]);
   }
   return users;

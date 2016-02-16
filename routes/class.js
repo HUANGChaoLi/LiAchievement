@@ -202,6 +202,5 @@ function arrToStudents(obj) {
       }
     })(data[i]);
   }
-  console.log(allStudents);
   return allStudents;
 }

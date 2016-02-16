@@ -18,32 +18,33 @@ module.exports = function (db) {
     },
 
     addUsers: function (usersarr) {
-      for (var i = 0; i < usersarr.length; i++) {
-        (function (user) {
-          for (var key in user) {
-            if (user.hasOwnProperty(key)) {
-              validator.isFieldValid(key, user[key]);
-            }
+      registry.find().toArray().then(function (registeredUsers){
+        return new Promise(function (resolve, reject){
+          var existedUsername = [];
+          for (var i = 0; i < registeredUsers.length; i++) {
+            existedUsername.push(registeredUsers[i].username);
           }
-          if (validator.isFormValid()) {
-            registry.findOne({username: user.username}).then(function (existedUser) {
-              if (existedUser) {
-                console.log(user.username + '用户名已存在, 注册失败.');
-              } else {
-                delete user.rePassword;
+          for (var i = 0; i < usersarr.length; i++) {
+            for (var j = 0; j < existedUsername.length; j++) {
+              if (existedUsername[j] == usersarr[i].username) {
+                console.log(usersarr[i].username + "用户名已存在，注册失败");
+                break;
+              }
+            }
+            if (j == existedUsername.length) {
+              existedUsername.push(usersarr[i].username);
+              (function (user){
                 var sha1 = crypto.createHash("sha1");
                 sha1.update(user.password);
                 user.password = sha1.digest('hex');
                 registry.insert(user).then(function () {
                   console.log(user.username + '用户注册成功.');
                 });
-              }
-            });
-          } else {
-            console.log(user.username + '表单有误, 注册失败.');
+              })(usersarr[i]);
+            }
           }
-        })(usersarr[i]);
-      }
+        });
+      });
     },
 
     deleteUser: function (username) {
