@@ -2,7 +2,7 @@
   .span12
     .panel.panel-default
       .panel-heading
-        button#reflesh.btn.btn-success.btn-lg.btn-block(type='button', reflesh-users='')
+        button#reflesh.btn.btn-default.btn-lg.btn-block(type='button', reflesh-users='')
           strong
             i.fa.fa-refresh
             |&nbsp;( {{classname}} )&nbsp;班级学生列表
@@ -54,6 +54,10 @@ div
             | 给班级({{classname}})添加一位学生
         .modal-body
           form.bs-example.bs-example-form(role='form')
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-home &nbsp;
+              input.form-control(type='text', name='classname', placeholder='用户名',value='{{classname}}', disabled, valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user &nbsp;

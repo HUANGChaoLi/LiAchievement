@@ -26,9 +26,12 @@ module.service( 'currentClass', [ '$rootScope', '$http' , function( $rootScope, 
       },
       getClassname: function () {
         return service.class.classname;
+      },
+      getAdminname: function () {
+        return service.class.adminname;
       }
     };
-    service.class.adminname = $('#adminname').val();
+    service.class.adminname = $('#adminname').attr('ng-data-adminname');
     return service;
 }]);
 

@@ -49,11 +49,17 @@ module.exports = function (db) {
 
   // Routes
 
+  app.get('/favicon.ico', function (req, res){
+    res.end();
+  });
+
   // User
 
   app.get('/', routes.index);
 
   app.get('/getAllUsers', routes.getAllUsers);
+
+  app.post('/getUserInfo', routes.getUserInfo);
 
   app.post('/uniqueCheck', routes.uniqueCheck);
 
@@ -75,11 +81,21 @@ module.exports = function (db) {
 
   // Class
 
-  app.get('/getAllClasses', Class.getAllClasses);
+  app.post('/getAllClasses', Class.getAllClasses);
 
   app.post('/addClass', Class.addClass);
 
   app.post('/deleteClass', Class.deleteClass);
+
+  // Ta
+
+  app.post('/getAllTAs', Class.getAllTAs);
+
+  app.post('/addTa', Class.addTa);
+
+  app.post('/deleteTa', Class.deleteTa);
+
+  app.post('/editTa', Class.editTa);
 
   // Blog
 

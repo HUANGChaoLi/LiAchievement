@@ -2,12 +2,12 @@
   .span12
     .panel.panel-default
       .panel-heading
-        button#reflesh.btn.btn-info.btn-lg.btn-block(type='button', reflesh-class)
+        button#reflesh.btn.btn-default.btn-lg.btn-block(type='button', reflesh-class)
           strong
             i.fa.fa-refresh
             | 班级列表
       .panel-body
-        button.btn.btn-defalut.btn-large.btn-info.edit-class(type='button', data-toggle='modal', data-target='#addClass', remove-classname='')
+        button.btn.btn-defalut.btn-large.btn-success.edit-class(type='button', data-toggle='modal', data-target='#addClass', remove-classname='')
           h5 添加单位班级
         button.btn.btn-large.btn-defalut.btn-danger.edit-class(type='button', data-toggle='modal', data-target='#deleteClass', remove-classname='')
           h5 删除单位班级
@@ -60,7 +60,7 @@ div
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user
-              input.form-control(type='text', name='adminname', value='huangchaoli', disabled='disable', valid)
+              input.form-control(type='text', name='adminname', ng-model='class.adminname', disabled='disable', valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-home
@@ -85,7 +85,7 @@ div
               .input-group.input-group-lg
                 span.input-group-addon
                   i.fa.fa-user
-                input#adminname.form-control(type='text', name='adminname', disabled='disable', value='huangchaoli', valid)
+                input.form-control(type='text', name='adminname', disabled='disable', ng-model='class.adminname', valid)
               .input-group.input-group-lg
                 span.input-group-addon
                   i.fa.fa-home

@@ -2,14 +2,14 @@
   .span12
     .panel.panel-default
       .panel-heading
-        button#reflesh.btn.btn-success.btn-lg.btn-block(type='button', reflesh-users='')
+        button#reflesh.btn.btn-default.btn-lg.btn-block(type='button', reflesh-ta)
           strong
             i.fa.fa-refresh
-            |&nbsp;( {{classname}} )&nbsp;班级助理列表
+            |&nbsp;( {{Ta.classname}} )&nbsp;班级助理列表
       .panel-body
         input.form-control(type='text', ng-model='search', placeholder='搜索')
         br
-        button.btn.btn-info.btn-lg.btn-block(type='button', data-toggle='modal', data-target='#addTa') 添加新助理
+        button.btn.btn-info.btn-lg.btn-block(type='button', data-toggle='modal', data-target='#addTa', remove-username) 添加新助理
       table.table.table-bordered.table-striped
         thead
           tr
@@ -32,12 +32,13 @@
               h4
                 strong 处理
         tbody
-          tr(ng-repeat='user in users| filter:search')
+          tr(ng-repeat='ta in TAs| filter:search')
             td {{$index + 1}}
-            td {{user.username}}
-            td {{user.truename}}
-            td {{user.email}}
-            td {{user.limit}}
+            td {{ta.username}}
+            td
+              button.btn.btn-info(type='button', get-username, see-truename) 查看真实姓名
+            td {{Ta.classname}}
+            td {{ta.group}}
             td
               button.btn.btn-warning(type='button', data-toggle='modal', data-target='#editTa', get-username='') 更改组别
               button.btn.btn-danger(type='button', data-toggle='modal', data-target='#deleteTa', get-username='') 删除该助理
@@ -50,21 +51,21 @@ div
           button.close(type='button', data-dismiss='modal', aria-hidden='true')
             | ×
           h4.modal-title
-            | 给班级({{classname}})添加一位老师助理
+            | 给班级({{Ta.classname}})添加一位老师助理
         .modal-body
           form.bs-example.bs-example-form(role='form')
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user &nbsp;
-              input.form-control(type='text', name='username', placeholder='用户名', ng-model='user.username', valid)
+              input.form-control(type='text', name='username', placeholder='用户名', ng-model='Ta.username', valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-users
-              input.form-control(type='text', name='truename', placeholder='负责组别（多组别请以英文逗号分隔）', ng-model='user.group', valid)
+              input.form-control(type='text', name='group', placeholder='负责组别（多组别请以英文逗号分隔）', ng-model='Ta.group', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
-          button.btn.btn-primary(type='button', add-user='')
+          button.btn.btn-primary(type='button', add-ta)
             | 添加该老师助理
           .alert.alert-danger.error(role='alert')
 
@@ -81,15 +82,15 @@ div
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user &nbsp;
-              input.form-control(type='text', disabled, name='username', placeholder='用户名', ng-model='user.username', valid)
+              input.form-control(type='text', disabled, name='username', placeholder='用户名', ng-model='Ta.username', valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-users
-              input.form-control(type='text', name='truename', placeholder='负责组别（多组别请以英文逗号分隔）', ng-model='user.group', valid)
+              input.form-control(type='text', name='group', placeholder='负责组别（多组别请以英文逗号分隔）', ng-model='Ta.group', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
-          button.btn.btn-primary(type='button', add-user='')
+          button.btn.btn-primary(type='button', edit-ta)
             | 更改该老师助理信息
           .alert.alert-danger.error(role='alert')
 
@@ -106,10 +107,10 @@ div
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user &nbsp;
-              input.form-control(type='text', disabled, name='username', placeholder='用户名', ng-model='user.username', valid)
+              input.form-control(type='text', disabled, name='username', placeholder='用户名', ng-model='Ta.username', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
-          button.btn.btn-primary(type='button', add-user='')
+          button.btn.btn-primary(type='button', delete-ta)
             | 删除该老师助理
           .alert.alert-danger.error(role='alert')

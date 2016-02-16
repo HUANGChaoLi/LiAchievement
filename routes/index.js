@@ -8,6 +8,14 @@ module.exports = function (db) {
   console.log("index connect yes!!");
 
   return {
+    getUserInfo: function (req, res) {
+      var user = req.body;
+      userManager.getUserInfo(user.username).then(function (existedUser){
+        res.json(existedUser);
+      }).catch(function (err){
+        res.status(404).end('不存在该用户');
+      });
+    },
     /* GET home page. */
     checkLogin: function (req, res, next) {
       if (!req.session.user) {
@@ -121,7 +129,7 @@ module.exports = function (db) {
             userManager.addUsers(arrToUsers(userarr));
           })(obj[i].data);
         }
-        res.redirect('/');
+        res.redirect('/admin');
       }
       if (req.files[0]) {
         fs.unlink('./uploads/' + req.files[0].originalname, function (err){
@@ -150,7 +158,7 @@ module.exports = function (db) {
             userManager.deleteUsers(usernamearrs);
           })(obj[i].data);
         }
-        res.redirect('/');
+        res.redirect('/admin');
       }
       if (req.files[0]) {
         fs.unlink('./uploads/' + req.files[0].originalname, function (err){

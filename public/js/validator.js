@@ -72,7 +72,15 @@ var validator = {
   },
 
   isGroupValid: function (group) {
-    return this.form.group.status = Number.isInteger(group) && (group > 0);
+    var result = true;
+    if (group == '') result = false;
+    var resultArr = group.split(",");
+    for (var i = 0; i < resultArr.length; i++) {
+      if (!(!isNaN(resultArr[i]) && (parseInt(resultArr[i]) > 0))) {
+        result = false; break;
+      }
+    }
+    return this.form.group.status = result;
   },
 
   isFieldValid: function(fieldname, value){
@@ -112,6 +120,14 @@ var validator = {
   // 班级
   isClassValid: function () {
     return this.form.adminname.status && this.form.classname.status;
+  },
+
+  isTaValid: function () {
+    return this.form.classname.status && this.form.username.status && this.form.group.status;
+  },
+
+  isDeleteTaValid: function () {
+    return this.form.classname.status && this.form.username.status;
   }
 }
 

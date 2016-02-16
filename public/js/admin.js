@@ -232,6 +232,23 @@ module.directive( "getUsername", [ 'Users', function( Users ) {
   }
 }]);
 
+module.directive( "getInfo", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        $http.post('/getUserInfo', scope.editUser).
+          success(function (user) {
+            user.classname = user.classname ? user.classname : '无';
+            user.group = user.group ? user.group : '无';
+            element.text('班：' + user.classname + '； 组：' + user.group);
+          }).error(function (err) {
+            element.text(err);
+          });
+      });
+    }
+  }
+}]);
+
 
 $(function (){
   $('.modal-content .error').hide();

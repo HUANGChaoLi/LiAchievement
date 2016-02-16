@@ -4,6 +4,7 @@ module.exports = function (db){
   console.log("api connect yes!!");
 
   return {
+
     getAdminName: function (req, res) {
       res.end("Administrator");
     },
