@@ -135,7 +135,7 @@ div
             | ×
           h4.modal-title
             | 批量添加学生到{{student.classname}}(excel表格)
-        form(action='/uploadAddStudents', method='post', enctype='multipart/form-data')
+        form(action='/uploadAddStudents/{{student.classname}}', method='post', enctype='multipart/form-data')
           .modal-body
             .input-group.input-group-lg
               span.input-group-addon

@@ -130,6 +130,27 @@ module.exports = function (db) {
       }
     },
 
+    addStudents: function (req, res, next){
+      console.log(req.params.classname)
+      if (!req.files[0] || path.extname(req.files[0].originalname) != '.xlsx') {
+        res.send('请上传xlsx类型文件');
+        console.log('文件上传错误');
+      } else {
+        var obj = xlsx.parse('./uploads/' + req.files[0].originalname);
+        var studentsArr = arrToStudents(obj);
+        classManager.addStudents(req.params.classname, studentsArr).then(function () {
+          res.redirect('/');
+        }).catch(function (err) {
+          res.end(err);
+        });
+      }
+      if (req.files[0]) {
+        fs.unlink('./uploads/' + req.files[0].originalname, function (err){
+          console.log('文件删除成功');
+        });
+      }
+    },
+
     deleteStudent: function (req, res, next) {
       var oldStudent = req.body;
       var validError = classManager.checkDeleteStudentValid(oldStudent);
@@ -161,4 +182,26 @@ module.exports = function (db) {
     }
 
   };
+}
+
+function arrToStudents(obj) {
+  var data = [];
+  for (var i = 0; i < obj.length; i++) {
+    for (var j = 0; j < obj[i].data.length; j++) {
+      data.push(obj[i].data[j]);
+    }
+  }
+  var allStudents = [];
+  for (var i = 0; i < data.length; i++) {
+    (function (studentData){
+      var student = {};
+      student.username = studentData[0];
+      student.stuGroup = studentData[1].toString();
+      if (validator.isUsernameValid(student.username) && validator.isStuGroupValid(student.stuGroup)) {
+        allStudents.push(student);
+      }
+    })(data[i]);
+  }
+  console.log(allStudents);
+  return allStudents;
 }

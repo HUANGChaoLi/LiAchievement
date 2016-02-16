@@ -188,6 +188,31 @@ module.exports = function (db) {
       });
     },
 
+    addStudents: function (classname, newStudents) {
+      return classes.findOne({classname: classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var Students = existedClass.student;
+            for (var i = 0; i < newStudents.length; i++) {
+              for (var j = 0; j < Students.length; j++) {
+                if (newStudents[i].username == Students[j].username) {
+                  console.log('已经存在' + newStudents[i].username + ',添加失败');
+                  break;
+                }
+              }
+              if (j == Students.length) {
+                Students.push(newStudents[i]);
+                console.log(newStudents[i].username + '添加成功');
+              }
+            }
+            classes.updateOne({classname: classname}, {$set: {student: Students}}).then(resolve);
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
     deleteStudent: function (oldStudent) {
       return classes.findOne({classname: oldStudent.classname}).then(function (existedClass) {
         return new Promise(function (resolve, reject){

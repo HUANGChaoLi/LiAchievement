@@ -104,10 +104,11 @@ module.exports = function (db) {
 
   app.post('/addStudent', Class.addStudent);
 
+  app.post('/uploadAddStudents/:classname', upload.any(), Class.addStudents);
+
   app.post('/deleteStudent', Class.deleteStudent);
 
   app.post('/editStudent', Class.editStudent);
-
 
 
   // Blog
