@@ -256,12 +256,174 @@ module.directive( "removeUsername", [function() {
   }
 }]);
 
+// 学生情况
+
 function studentCtrl($scope, $http, $routeParams) {
-  $scope.classname = $routeParams.classname;
+  $scope.student = {};
+  $scope.student.classname = $routeParams.classname;
   $('.error').hide();
-  $http.get('/getAllUsers').
-    success(function (allUsers) {
-      $scope.users = allUsers;
+  $http.post('/getAllStudents', $scope.student).
+    success(function (allStudents) {
+      $scope.Students = allStudents;
+    }).error(function (err_res) {
+      alert(err_res);
+    });
+}
+
+module.directive( "getStudentname", [ function() {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.student.username = element.parents('tr').eq(0).find('td').eq(1).text();
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "removeStudentname", [ function() {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.student.username = '';
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "refleshStudents", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        $http.post('/getAllStudents', scope.student).
+          success(function (allStudents) {
+            scope.Students = allStudents;
+            // callback();
+          }).error(function (err_res) {
+            alert(err_res);
+            // callback(err_res);
+          });
+      });
+    }
+  }
+}]);
+
+module.directive( "addStudent", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        for (var key in scope.student) {
+          if (scope.student.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.student[key]);
+          }
+        }
+        if (validator.isStudentValid()) {
+          $http.post('/addStudent', scope.student).
+            success(function () {
+              $('#reflesh').click();
+              $('.close').click();
+              element.parents('.modal-content').find('.error').text('').hide();
+            }).error(function (err) {
+              element.parents('.modal-content').find('.error').text(err).show();
+            });
+        } else {
+          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);
+
+module.directive( "editStudent", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        for (var key in scope.student) {
+          if (scope.student.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.student[key]);
+          }
+        }
+        if (validator.isStudentValid()) {
+          $http.post('/editStudent', scope.student).
+            success(function () {
+              $('#reflesh').click();
+              $('.close').click();
+              element.parents('.modal-content').find('.error').text('').hide();
+            }).error(function (err) {
+              element.parents('.modal-content').find('.error').text(err).show();
+            });
+        } else {
+          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);
+
+module.directive( "deleteStudent", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        for (var key in scope.student) {
+          if (scope.student.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.student[key]);
+          }
+        }
+        if (validator.isDeleteStudentValid()) {
+          $http.post('/deleteStudent', scope.student).
+            success(function () {
+              $('#reflesh').click();
+              $('.close').click();
+              element.parents('.modal-content').find('.error').text('').hide();
+            }).error(function (err) {
+              element.parents('.modal-content').find('.error').text(err).show();
+            });
+        } else {
+          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);
+
+module.directive( "seeStudentTruename", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.student.username = element.parents('tr').eq(0).find('td').eq(1).text();
+        scope.$apply();
+        $http.post('/getUserInfo', scope.student).
+          success(function (user) {
+            element.text(user.truename);
+          }).error(function (err) {
+            element.text(err);
+          });
+      });
+    }
+  }
+}]);
+
+//组别情况
+
+function groupCtrl($scope, $http, $routeParams) {
+  $scope.class = {};
+  $scope.class.classname = $routeParams.classname;
+  $scope.Ta = {};
+  $scope.Ta.classname = $routeParams.classname;
+  $scope.student = {};
+  $scope.student.classname = $routeParams.classname;
+  $http.post('/getAllTAs', $scope.Ta).
+    success(function (allTAs) {
+      $scope.TAs = allTAs;
+      // callback();
+    }).error(function (err_res) {
+      alert(err_res);
+      // callback(err_res);
+    });
+  $http.post('/getAllStudents', $scope.student).
+    success(function (allStudents) {
+      $scope.Students = allStudents;
       // callback();
     }).error(function (err_res) {
       alert(err_res);

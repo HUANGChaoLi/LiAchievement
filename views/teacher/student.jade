@@ -2,15 +2,22 @@
   .span12
     .panel.panel-default
       .panel-heading
-        button#reflesh.btn.btn-default.btn-lg.btn-block(type='button', reflesh-users='')
-          strong
-            i.fa.fa-refresh
-            |&nbsp;( {{classname}} )&nbsp;班级学生列表
+        .container-fluid
+          .row-fluid
+            .col-xs-6.span6
+              button.btn.btn-success.btn-lg.btn-block(type='button', data-toggle='modal', data-target='#addStudent', remove-studentname) 添加新学生
+            .col-xs-6.span6
+              button.btn.btn-success.btn-lg.btn-block(type='button', data-toggle='modal', data-target='#addStudents') 添加新学生(通过excel表格)
       .panel-body
-        button.btn.btn-info.btn-lg.add-student(type='button', data-toggle='modal', data-target='#addStudent') 添加新学生
-        button.btn.btn-info.btn-lg.add-student(type='button', data-toggle='modal', data-target='#addStudents') 添加新学生(通过excel表格)
-        br
-        input.form-control(type='text', ng-model='search', placeholder='搜索')
+        .container-fluid
+          .row-fluid
+            .col-xs-3.span3
+              button#reflesh.btn.btn-default.btn-block(type='button', reflesh-students)
+                strong
+                  i.fa.fa-refresh
+                  |&nbsp;( {{student.classname}} )&nbsp;班级学生列表
+            .col-xs-9.span9
+              input.form-control(type='text', ng-model='search', placeholder='搜索')
       table.table.table-bordered.table-striped
         thead
           tr
@@ -33,15 +40,16 @@
               h4
                 strong 处理
         tbody
-          tr(ng-repeat='user in users| filter:search')
+          tr(ng-repeat='Student in Students| filter:search')
             td {{$index + 1}}
-            td {{user.username}}
-            td {{user.truename}}
-            td {{user.email}}
-            td {{user.limit}}
+            td {{Student.username}}
+            td 
+              button.btn.btn-link(type='button', see-student-truename) 查看真实姓名
+            td {{student.classname}}
+            td {{Student.stuGroup}}
             td
-              button.btn.btn-warning(type='button', data-toggle='modal', data-target='#editStudent', get-username='') 更改组别
-              button.btn.btn-danger(type='button', data-toggle='modal', data-target='#deleteStudent', get-username='') 删除该学生
+              button.btn.btn-warning(type='button', data-toggle='modal', data-target='#editStudent', get-studentname='') 更改组别
+              button.btn.btn-danger(type='button', data-toggle='modal', data-target='#deleteStudent', get-studentname='') 删除该学生
 //蒙版
 div         
   #addStudent.modal.fade(aria-hidden='true')
@@ -51,25 +59,25 @@ div
           button.close(type='button', data-dismiss='modal', aria-hidden='true')
             | ×
           h4.modal-title
-            | 给班级({{classname}})添加一位学生
+            | 给班级({{student.classname}})添加一位学生
         .modal-body
           form.bs-example.bs-example-form(role='form')
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-home &nbsp;
-              input.form-control(type='text', name='classname', placeholder='用户名',value='{{classname}}', disabled, valid)
+              input.form-control(type='text', name='classname', placeholder='用户名', ng-model='student.classname', disabled, valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user &nbsp;
-              input.form-control(type='text', name='username', placeholder='用户名', ng-model='studentname', valid)
+              input.form-control(type='text', name='username', placeholder='用户名', ng-model='student.username', valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-users
-              input.form-control(type='text', name='group', placeholder='组别(请输入组别数字)', ng-model='group', valid)
+              input.form-control(type='text', name='stuGroup', placeholder='组别(请输入组别数字)', ng-model='student.stuGroup', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
-          button.btn.btn-primary(type='button', add-user='')
+          button.btn.btn-primary(type='button', add-student)
             | 添加该学生
           .alert.alert-danger.error(role='alert')
 
@@ -86,15 +94,15 @@ div
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user &nbsp;
-              input.form-control(type='text', name='username', placeholder='用户名', ng-model='studentname', disabled, valid)
+              input.form-control(type='text', name='username', placeholder='用户名', ng-model='student.username', disabled, valid)
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-users
-              input.form-control(type='text', name='group', placeholder='组别(请输入组别数字)', ng-model='group', valid)
+              input.form-control(type='text', name='stuGroup', placeholder='组别(请输入组别数字)', ng-model='student.stuGroup', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
-          button.btn.btn-primary(type='button', add-user='')
+          button.btn.btn-primary(type='button', edit-student)
             | 更改该学生信息
           .alert.alert-danger.error(role='alert')
 
@@ -105,17 +113,17 @@ div
           button.close(type='button', data-dismiss='modal', aria-hidden='true')
             | ×
           h4.modal-title
-            | 在班级({{classname}})中删除该学生
+            | 在班级({{student.classname}})中删除该学生
         .modal-body
           form.bs-example.bs-example-form(role='form')
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-user &nbsp;
-              input.form-control(type='text', name='username', placeholder='用户名', ng-model='studentname', valid)
+              input.form-control(type='text', name='username', placeholder='用户名', ng-model='student.username', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
-          button.btn.btn-primary(type='button', add-user='')
+          button.btn.btn-primary(type='button', delete-student)
             | 删除该学生
           .alert.alert-danger.error(role='alert')
 
@@ -126,13 +134,13 @@ div
           button.close(type='button', data-dismiss='modal', aria-hidden='true')
             | ×
           h4.modal-title
-            | 批量添加学生到{{classname}}(excel表格)
+            | 批量添加学生到{{student.classname}}(excel表格)
         form(action='/uploadAddStudents', method='post', enctype='multipart/form-data')
           .modal-body
             .input-group.input-group-lg
               span.input-group-addon
                 i.fa.fa-home &nbsp;
-              input.form-control(type='text', name='classname', placeholder='用户名',value='{{classname}}', disabled, valid)
+              input.form-control(type='text', name='classname', placeholder='用户名', ng-model='student.classname', disabled, valid)
             .input-group.input-group-lg
               button.btn.btn-default.btn-lg.upload(type='button')
                 input.file(type='file', name='studentAddFile')

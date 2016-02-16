@@ -97,6 +97,19 @@ module.exports = function (db) {
 
   app.post('/editTa', Class.editTa);
 
+  // Student
+
+
+  app.post('/getAllStudents', Class.getAllStudents);
+
+  app.post('/addStudent', Class.addStudent);
+
+  app.post('/deleteStudent', Class.deleteStudent);
+
+  app.post('/editStudent', Class.editStudent);
+
+
+
   // Blog
 
   /*检查是否登录*/

@@ -2,14 +2,17 @@
   .span12
     .panel.panel-default
       .panel-heading
-        button#reflesh.btn.btn-default.btn-lg.btn-block(type='button', reflesh-ta)
-          strong
-            i.fa.fa-refresh
-            |&nbsp;( {{Ta.classname}} )&nbsp;班级助理列表
+        button.btn.btn-success.btn-block(type='button', data-toggle='modal', data-target='#addTa', remove-username)
+          h5 添加新助理
       .panel-body
-        input.form-control(type='text', ng-model='search', placeholder='搜索')
-        br
-        button.btn.btn-info.btn-lg.btn-block(type='button', data-toggle='modal', data-target='#addTa', remove-username) 添加新助理
+        .row-fluid
+          .col-xs-3.span3
+            button#reflesh.btn.btn-default.btn-block(type='button', reflesh-ta)
+              strong
+                i.fa.fa-refresh
+                |&nbsp;( {{Ta.classname}} )&nbsp;班级助理列表
+          .col-xs-9.span9
+            input.form-control(type='text', ng-model='search', placeholder='搜索')
       table.table.table-bordered.table-striped
         thead
           tr
@@ -36,7 +39,7 @@
             td {{$index + 1}}
             td {{ta.username}}
             td
-              button.btn.btn-info(type='button', get-username, see-truename) 查看真实姓名
+              button.btn.btn-link(type='button', get-username, see-truename) 查看真实姓名
             td {{Ta.classname}}
             td {{ta.group}}
             td

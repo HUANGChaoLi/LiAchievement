@@ -1,0 +1,79 @@
+.container-fluid
+  .row-fluid
+    .span12
+      .panel.panel-default
+        .panel-heading
+          .container-fluid
+            .row-fluid
+              .col-xs-3.span3
+                button#taReflesh.btn.btn-info.btn-block(type='button', reflesh-ta)
+                  strong
+                    i.fa.fa-refresh
+                    |&nbsp;( {{class.classname}} )&nbsp;班级助理列表
+              .col-xs-9.span9
+                input.form-control(type='text', ng-model='taSearch', placeholder='搜索')
+        table.table.table-bordered.table-hover
+          thead
+            tr
+              th
+                h4
+                  strong 序号
+              th
+                h4
+                  strong 用户名
+              th
+                h4
+                  strong 姓名
+              th
+                h4
+                  strong 负责班别
+              th
+                h4
+                  strong 负责组别
+          tbody
+            tr.info(ng-repeat='ta in TAs| filter:taSearch')
+              td {{$index + 1}}
+              td {{ta.username}}
+              td
+                button.btn.btn-link(type='button', get-username, see-truename) 查看真实姓名
+              td {{Ta.classname}}
+              td {{ta.group}}
+    hr
+    .span12
+      .panel.panel-default
+        .panel-heading
+          .container-fluid
+            .row-fluid
+              .col-xs-3.span3
+                button#StudentReflesh.btn.btn-success.btn-block(type='button', reflesh-students)
+                  strong
+                    i.fa.fa-refresh
+                    |&nbsp;( {{class.classname}} )&nbsp;班级学生列表
+              .col-xs-9.span9
+                input.form-control(type='text', ng-model='studentSearch', placeholder='搜索')
+        table.table.table-bordered.table-hover
+          thead
+            tr
+              th
+                h4
+                  strong 序号
+              th
+                h4
+                  strong 用户名
+              th
+                h4
+                  strong 姓名
+              th
+                h4
+                  strong 所在班别
+              th
+                h4
+                  strong 所在组别
+          tbody
+            tr.success(ng-repeat='Student in Students| filter:studentSearch')
+              td {{$index + 1}}
+              td {{Student.username}}
+              td
+                button.btn.btn-link(type='button', see-student-truename) 查看真实姓名
+              td {{student.classname}}
+              td {{Student.stuGroup}}

@@ -77,7 +77,7 @@ module.exports = function (db) {
 
     deleteTa: function (req, res, next) {
       var oldTa = req.body;
-      var validError = classManager.checkTaValid(oldTa);
+      var validError = classManager.checkDeleteTaValid(oldTa);
       if (validError) {
         res.status(403).end('老师助理表单不合法');
       } else {
@@ -98,6 +98,61 @@ module.exports = function (db) {
       } else {
         // 检查用户是否存在。。。
         classManager.editTa(currentTa).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    getAllStudents: function (req, res, next) {
+      var currentClass = req.body;
+      classManager.getAllStudents(currentClass).then(function (allStudents) {
+        res.json(allStudents);
+      }).catch(function (err) {
+        console.log(err);
+        res.status(403).end("服务器尚未找到班级学生信息");
+      });
+    },
+
+    addStudent: function (req, res, next) {
+      var newStudent = req.body;
+      var validError = classManager.checkStudentValid(newStudent);
+      if (validError) {
+        res.status(403).end('学生表单不合法');
+      } else {
+        // 检查用户是否存在。。。
+        classManager.addStudent(newStudent).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    deleteStudent: function (req, res, next) {
+      var oldStudent = req.body;
+      var validError = classManager.checkDeleteStudentValid(oldStudent);
+      if (validError) {
+        res.status(403).end('学生表单不合法');
+      } else {
+        // 检查用户是否存在。。。
+        classManager.deleteStudent(oldStudent).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    editStudent: function (req, res, next) {
+      var currentStudent = req.body;
+      var validError = classManager.checkStudentValid(currentStudent);
+      if (validError) {
+        res.status(403).end('老师助理表单不合法');
+      } else {
+        // 检查用户是否存在。。。
+        classManager.editStudent(currentStudent).then(function () {
           res.end();
         }).catch(function (err) {
           res.status(403).end(err);

@@ -2,16 +2,25 @@
   .span12
     .panel.panel-default
       .panel-heading
-        button#reflesh.btn.btn-default.btn-lg.btn-block(type='button', reflesh-class)
-          strong
-            i.fa.fa-refresh
-            | 班级列表
+        .container-fluid
+          .row-fluid
+            .col-xs-6.span6
+              button.btn.btn-large.btn-success.btn-block(type='button', data-toggle='modal', data-target='#addClass', remove-classname='') 
+                h5 添加单位班级
+            .col-xs-6.span6
+              button.btn.btn-large.btn-danger.btn-block(type='button', data-toggle='modal', data-target='#deleteClass', remove-classname='') 
+                h5 删除单位班级
       .panel-body
-        button.btn.btn-defalut.btn-large.btn-success.edit-class(type='button', data-toggle='modal', data-target='#addClass', remove-classname='')
-          h5 添加单位班级
-        button.btn.btn-large.btn-defalut.btn-danger.edit-class(type='button', data-toggle='modal', data-target='#deleteClass', remove-classname='')
-          h5 删除单位班级
-        input.form-control(type='text', ng-model='search', placeholder='搜索')
+        .container-fluid
+            .row-fluid
+              .col-xs-3.span3
+                button#reflesh.btn.btn-default.btn-block(type='button', reflesh-class)
+                  strong
+                    i.fa.fa-refresh
+                    | &nbsp;班级列表
+              .col-xs-9.span9
+                input.form-control(type='text', ng-model='search', placeholder='搜索')
+    hr
     .allclass
       .col-md-6.text-center(ng-repeat='class in classes| filter:search')
         .panel.panel-primary
@@ -31,7 +40,7 @@
                       strong 班级学生
                   th
                     h4
-                      strong 设置小组
+                      strong 查看小组
               tbody
                 tr
                   td
@@ -39,7 +48,7 @@
                   td
                     button.btn.btn-info.btn-block(type='button', get-classname, see-student) 查看班级学生
                   td
-                    button.btn.btn-info.btn-block(type='button', get-classname, edit-group) 设置班级小组
+                    button.btn.btn-info.btn-block(type='button', get-classname, see-group) 查看小组情况
           .panel-footer
             button.btn.btn-success.classfooter(type='button', edit-homework) 编辑班级作业
             button.btn.btn-danger.classfooter(type='button', data-toggle='modal', data-target='#deleteClass', get-classname) 删除该班级

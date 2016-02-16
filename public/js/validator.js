@@ -34,7 +34,11 @@ var validator = {
     },
     group: {
       status: false,
-      errorMessage: '请输入大约零的数字'
+      errorMessage: '请输入大约零的数字(多位以英文逗号相隔)'
+    },
+    stuGroup: {
+      status: false,
+      errorMessage: '请输入大约零的一位数字'
     }
   }, 
 
@@ -83,6 +87,10 @@ var validator = {
     return this.form.group.status = result;
   },
 
+  isStuGroupValid: function (stuGroup) {
+    return this.form.stuGroup.status = !isNaN(stuGroup) && (parseInt(stuGroup) > 0);
+  },
+
   isFieldValid: function(fieldname, value){
     var CapFiledname = fieldname[0].toUpperCase() + fieldname.slice(1, fieldname.length);
     return this["is" + CapFiledname + 'Valid'](value);
@@ -127,6 +135,14 @@ var validator = {
   },
 
   isDeleteTaValid: function () {
+    return this.form.classname.status && this.form.username.status;
+  },
+
+  isStudentValid: function () {
+    return this.form.classname.status && this.form.username.status && this.form.stuGroup.status;
+  },
+
+  isDeleteStudentValid: function () {
     return this.form.classname.status && this.form.username.status;
   }
 }

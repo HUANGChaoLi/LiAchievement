@@ -13,6 +13,13 @@ module.config(['$routeProvider', '$locationProvider', function($routeProvider, $
     when('/teacher/student/:classname', {
       templateUrl: '../student',
       controller: studentCtrl
+    }).
+    when('/teacher/group/:classname', {
+      templateUrl: '../group',
+      controller: groupCtrl
+    }).
+    otherwise({
+      redirectTo: '/'
     });
   $locationProvider.html5Mode(true);
 }]);
@@ -85,6 +92,17 @@ module.directive( "seeStudent", ['$location', 'currentClass', function($location
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
         $location.path('/teacher/student/' + currentClass.getClassname());
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "seeGroup", ['$location', 'currentClass', function($location, currentClass) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        $location.path('/teacher/group/' + currentClass.getClassname());
         scope.$apply();
       });
     }

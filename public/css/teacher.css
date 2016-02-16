@@ -27,12 +27,6 @@ body {
   overflow: hidden;
 }
 
-.edit-class,
-.add-student {
-  width: 49%;
-  margin-bottom: 12px;
-}
-
 .panel-title {
   text-align: left;
 }
