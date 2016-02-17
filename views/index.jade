@@ -1,0 +1,79 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    title teacher
+    base(href='/')
+    link(href='./libs/bootstrap-3.3.6-dist/css/bootstrap.min.css', rel='stylesheet')
+    link(href='./css/fontawesome/css/font-awesome.min.css', rel='stylesheet')
+    link(href='./css/teacher.css', rel='stylesheet')
+    script(src='./libs/jquery.js')
+    script(src='./js/validator.js')
+    script(src='./libs/bootstrap-3.3.6-dist/js/bootstrap.min.js')
+    script(src='./js/angular/angular.js')
+    script(src='./js/teacher.js')
+    script(src='./js/teacher/controller.js')
+  body
+    nav#nav.navbar.navbar-default(role='navigation')
+      .navbar-header.nav-info
+        a#project.navbar-brand(href='/') My Achievement
+      .container-fluid
+        ul.nav.navbar-nav.navbar-right
+          li
+            a(href='#') group28
+          li
+            a#adminname(href='#', ng-data-adminname='huangchaoli') {{huangchaoli}}
+          li.dropdown
+            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+              | 黄潮立
+              span.caret
+            ul.dropdown-menu
+              li
+                a.change-password(data-toggle='modal', data-target='#editPassword') 修改密码
+              li.divider(role='separator')
+              li
+                a.logout(href='#') 退出登陆
+    div
+      .container-fluid(ng-app='teacherApp')
+        .row-fluid
+          .span12
+            .asign-right
+              button.btn.btn-large.btn-info.btn-block(type='button', data-toggle='modal', data-target='#addUsers', get-class='')
+                h4 查看所有班级
+        hr
+        div(ng-view='ng-view')
+        // 蒙版
+        div(ng-controller='mainClassCtrl')
+          // 编辑用户密码
+          #editPassword.modal.fade(aria-hidden='true')
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  button.close(type='button', data-dismiss='modal', aria-hidden='true')
+                    | ×
+                  h4.modal-title
+                    | 编辑用户密码
+                .modal-body
+                  form.bs-example.bs-example-form(role='form')
+                    .input-group.input-group-lg
+                      span.input-group-addon
+                        i.fa.fa-user
+                      input.form-control(type='text', name='username', placeholder='用户名', disabled='disable', ng-model='editUser.username', valid='')
+                    .input-group.input-group-lg
+                      span.input-group-addon
+                        i.fa.fa-key
+                      input.form-control(type='password', name='oldPassword', placeholder='旧密码', ng-model='editUser.oldPassword', valid='')
+                    .input-group.input-group-lg
+                      span.input-group-addon
+                        i.fa.fa-key
+                      input.form-control(type='password', name='password', placeholder='新密码', ng-model='editUser.password', valid='')
+                    .input-group.input-group-lg
+                      span.input-group-addon
+                        i.fa.fa-key
+                      input.form-control(type='password', name='rePassword', placeholder='重复新密码', ng-model='editUser.rePassword', valid='')
+                .modal-footer
+                  button.btn.btn-default(type='button', data-dismiss='modal')
+                    | 关闭
+                  button.btn.btn-primary(type='button', edit-user-password='')
+                    | 更改密码
+                  .alert.alert-danger.error(role='alert')

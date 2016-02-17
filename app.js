@@ -47,6 +47,7 @@ module.exports = function (db) {
 
   app.use(express.static(path.join(__dirname, 'public')));
 
+
   // Routes
 
   app.get('/favicon.ico', function (req, res){
@@ -140,9 +141,14 @@ module.exports = function (db) {
 
   app.post('/data/unlockComment', api.unlockComment);
 
-  app.get('*', function (req, res, next) {
-    res.render('.'+req.url)
+
+  app.get('/teacher/:name', function (req, res, next){
+    var name = req.params.name;
+    res.render('teacher/' + name);
   });
+
+// redirect all others to the index (HTML5 history)
+  app.get('/*', routes.index);
 
   return app;
 }

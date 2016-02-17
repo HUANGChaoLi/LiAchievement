@@ -2,24 +2,24 @@ var module = angular.module('teacherApp', []);
 
 module.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
-    when('/teacher/class', {
-      templateUrl: './class',
+    when('/class', {
+      templateUrl: '../teacher/class',
       controller: classCtrl
     }).
-    when('/teacher/Ta/:classname', {
-      templateUrl: '../ta',
+    when('/Ta/:classname', {
+      templateUrl: '../../teacher/ta',
       controller: taCtrl
     }).
-    when('/teacher/student/:classname', {
-      templateUrl: '../student',
+    when('/student/:classname', {
+      templateUrl: '../../teacher/student',
       controller: studentCtrl
     }).
-    when('/teacher/group/:classname', {
-      templateUrl: '../group',
+    when('/group/:classname', {
+      templateUrl: '../../teacher/group',
       controller: groupCtrl
     }).
     otherwise({
-      redirectTo: '/'
+      redirectTo: '/class'
     });
   $locationProvider.html5Mode(true);
 }]);
@@ -47,7 +47,7 @@ module.directive( "getClass", ['$location',  function($location) {
   return {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        $location.path('/teacher/class')
+        $location.path('/class')
         scope.$apply();
       });
     }
@@ -80,7 +80,7 @@ module.directive( "seeTa", ['$location', 'currentClass', function($location, cur
   return {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        $location.path('/teacher/Ta/' + currentClass.getClassname());
+        $location.path('/Ta/' + currentClass.getClassname());
         scope.$apply();
       });
     }
@@ -91,7 +91,7 @@ module.directive( "seeStudent", ['$location', 'currentClass', function($location
   return {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        $location.path('/teacher/student/' + currentClass.getClassname());
+        $location.path('/student/' + currentClass.getClassname());
         scope.$apply();
       });
     }
@@ -102,7 +102,7 @@ module.directive( "seeGroup", ['$location', 'currentClass', function($location, 
   return {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        $location.path('/teacher/group/' + currentClass.getClassname());
+        $location.path('/group/' + currentClass.getClassname());
         scope.$apply();
       });
     }
