@@ -105,6 +105,28 @@ module.exports = function (db) {
       })
     },
 
+    changePassword: function (user) {
+      return registry.findOne({username: user.username}).then(function (registeredUser) {
+        return new Promise(function (resolve, reject){
+          if (registeredUser) {
+            var sha1 = crypto.createHash("sha1");
+            sha1.update(user.oldPassword);
+            user.oldPassword = sha1.digest('hex');
+            if (user.oldPassword == registeredUser.password) {
+              var sha1 = crypto.createHash("sha1");
+              sha1.update(user.password);
+              user.password = sha1.digest('hex');
+              registry.updateOne({username: user.username}, {$set: {password: user.password}}).then(resolve);
+            } else {
+              reject('旧密码有误,请重新输入');
+            }
+          } else {
+            reject("该用户不存在");
+          }
+        });
+      })
+    },
+
     getAllUsers: function () {
       return registry.find().toArray().then(function (allUsers){
         return new Promise(function (resolve, reject) {

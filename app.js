@@ -76,6 +76,8 @@ module.exports = function (db) {
 
   app.post('/editUserPassword', routes.editUserPassword);
 
+  app.post('/changePassword', routes.changePassword);
+
   app.post('/signin', routes.signin);
 
   app.all('/logout', routes.logout);

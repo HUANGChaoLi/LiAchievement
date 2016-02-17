@@ -7,6 +7,22 @@ module.controller( "mainClassCtrl", ['$scope', 'currentClass', function( $scope,
   $scope.editUser.username = $('#adminname').attr('ng-data-adminname');
 }]);
 
+module.directive( "editUserPassword", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        $http.post('/changePassword', scope.editUser).
+          success(function (allClasses) {
+            $('.close').click();
+            scope.editUser.oldPassword = '';
+          }).error(function (err) {
+            element.parents('.modal-content').find('.error').text(err).show();
+          });
+      });
+    }
+  }
+}]);
+
 module.directive( "getClass", ['$location',  function($location) {
   return {
     link: function( scope, element, attrs ) {
@@ -468,14 +484,18 @@ function homeworkCtrl($scope, $http, currentClass, $routeParams) {
   $scope.homework = {};
   $scope.homework.classname = $routeParams.classname;
   $('.error').hide();
-  $http.post('/getAllHomeworks', $scope.homework).
+  $scope.homeworks = [];
+  setTimeout(function () {
+    $('#reflesh').click();  
+  }, 200);
+/*  $http.post('/getAllHomeworks', $scope.homework).
     success(function (allHomeworks) {
       $scope.homeworks = allHomeworks;
       // callback();
     }).error(function (err_res) {
       alert(err_res);
       // callback(err_res);
-    });
+    });*/
   $scope.getTime = function (Time) {
     if (!(/^[0-9]{4}:[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/.test(Time))) {
       return null;
@@ -532,6 +552,21 @@ module.directive( "refleshHomeworks", ['$http',  function($http) {
       element.bind( "click", function() {
         $http.post('/getAllHomeworks', scope.homework).
           success(function (allHomeworks) {
+            for (var i = 0; i < allHomeworks.length; i++) {
+              var today = new Date();
+              var starttime = scope.getTime(allHomeworks[i].starttime);
+              var endtime = scope.getTime(allHomeworks[i].endtime);
+              if (today > endtime) {
+                allHomeworks[i].look = 'default';
+                allHomeworks[i].state = 'end';
+              } else if (today > starttime) {
+                allHomeworks[i].look = 'info';
+                allHomeworks[i].state = 'present';
+              } else {
+                allHomeworks[i].look = 'success';
+                allHomeworks[i].state = 'future';
+              }
+            }
             scope.homeworks = allHomeworks;
             // callback();
           }).error(function (err_res) {

@@ -103,7 +103,7 @@ module.exports = function (db) {
       }
     },
 
-    editUserPassword: function (req, res, next) {
+    editUserPassword: function (req, res, next) {//管理员改密码不需要旧密码
       var user = req.body;
       var validError = userManager.checkUserValid(user);
 
@@ -111,6 +111,22 @@ module.exports = function (db) {
         res.status(404).json(validError);
       } else {
         userManager.editUserPassword(user).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(404).end(err);
+        })
+      }
+    },
+
+    changePassword: function (req, res, next) {//普通改密码需要旧密码
+      var user = req.body;
+      delete user.rePassword;//默认客户端表单重复密码正确；
+      var validError = userManager.checkUserValid(user);
+
+      if (validError) {
+        res.status(404).end("表单有误，请重新输入");
+      } else {
+        userManager.changePassword(user).then(function () {
           res.end();
         }).catch(function (err) {
           res.status(404).end(err);

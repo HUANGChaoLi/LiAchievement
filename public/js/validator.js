@@ -12,6 +12,10 @@ var validator = {
       status: false,
       errorMessage: '密码不一致'
     }, 
+    oldPassword: {
+      status: false,
+      errorMessage: '密码为6~12位数字、大小写字母、中划线、下划线'
+    }, 
     truename: {
       status: false,
       errorMessage: '请输入正确的姓名'
@@ -46,7 +50,7 @@ var validator = {
     },
     link: {
       status: false,
-      errorMessage: '请输入以下格式的链接(http://...)'
+      errorMessage: '请输入正确格式的链接'
     },
     starttime: {
       status: false,
@@ -74,8 +78,7 @@ var validator = {
       var hour = numarr.pop();
       var time = new Date(numarr.join(','));
       time.setHours(hour);
-      var today = new Date();
-      if (time == 'Invalid Date' || time < today) result = false;
+      if (time == 'Invalid Date') result = false;
     }
     return result;
   }, 
@@ -95,6 +98,10 @@ var validator = {
   isPasswordValid: function (password){
     this.passwords = password;
     return this.form.password.status = /^[a-zA-Z0-9\-\_]{6,12}$/.test(password);
+  },
+
+  isOldPasswordValid: function (oldpassword){
+    return this.form.password.status = /^[a-zA-Z0-9\-\_]{6,12}$/.test(oldpassword);
   },
 
   isRePasswordValid: function (rePassword){
