@@ -112,6 +112,16 @@ module.exports = function (db) {
   app.post('/editStudent', Class.editStudent);
 
 
+  // Homework
+
+  app.post('/getAllHomeworks', Class.getAllHomeworks);
+
+  app.post('/addHomework', Class.addHomework);
+
+  app.post('/deleteHomework', Class.deleteHomework);
+
+  app.post('/editHomework', Class.editHomework);
+
   // Blog
 
   /*检查是否登录*/

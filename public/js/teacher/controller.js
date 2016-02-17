@@ -7,6 +7,37 @@ module.controller( "mainClassCtrl", ['$scope', 'currentClass', function( $scope,
   $scope.editUser.username = $('#adminname').attr('ng-data-adminname');
 }]);
 
+module.directive( "getClass", ['$location',  function($location) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        $location.path('/class')
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "getClassname", ['$location', 'currentClass', function($location, currentClass) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        currentClass.changeClassname(element.parents('.panel').find('.panel-title').eq(0).attr('ng-data-classname'));
+      });
+    }
+  }
+}]);
+
+module.directive( "removeClassname", ['$location', 'currentClass', function($location, currentClass) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        currentClass.changeClassname('');
+      });
+    }
+  }
+}]);
+
 function classCtrl($scope, $http, currentClass) {
   $('.error').hide();
   $scope.$on( 'currentClass.update', function( event ) {
@@ -430,3 +461,174 @@ function groupCtrl($scope, $http, $routeParams) {
       // callback(err_res);
     });
 }
+
+// 作业控制器
+
+function homeworkCtrl($scope, $http, currentClass, $routeParams) {
+  $scope.homework = {};
+  $scope.homework.classname = $routeParams.classname;
+  $('.error').hide();
+  $http.post('/getAllHomeworks', $scope.homework).
+    success(function (allHomeworks) {
+      $scope.homeworks = allHomeworks;
+      // callback();
+    }).error(function (err_res) {
+      alert(err_res);
+      // callback(err_res);
+    });
+  $scope.getTime = function (Time) {
+    if (!(/^[0-9]{4}:[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/.test(Time))) {
+      return null;
+    } else {
+      var numarr = Time.split(':');
+      var hour = numarr.pop();
+      var time = new Date(numarr.join(','));
+      time.setHours(hour);
+      if (time == 'Invalid Date') return null;
+      else return time;
+    }
+  }
+}
+
+module.directive( "getHomeworkname", [ function() {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.homework.homeworkname = element.parents('.panel').eq(0).find('.panel-title').eq(0).attr('ng-data-homeworkname');
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "getHomeworkInfo", [ function() {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.homework.homeworkname = element.parents('.panel').eq(0).find('.panel-title').eq(0).attr('ng-data-homeworkname');
+        scope.homework.link = element.parents('.panel').eq(0).find('.panel-title span').eq(1).find('a').eq(0).attr('href');
+        scope.homework.starttime = element.parents('.panel').eq(0).find('.panel-title span').eq(0).attr('ng-data-starttime');
+        scope.homework.endtime = element.parents('.panel').eq(0).find('.panel-title span').eq(0).attr('ng-data-endtime');
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "removeHomeworkname", [ function() {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.homework.homeworkname = '';
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "refleshHomeworks", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        $http.post('/getAllHomeworks', scope.homework).
+          success(function (allHomeworks) {
+            scope.homeworks = allHomeworks;
+            // callback();
+          }).error(function (err_res) {
+            alert(err_res);
+            // callback(err_res);
+          });
+      });
+    }
+  }
+}]);
+
+module.directive( "addHomework", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        for (var key in scope.homework) {
+          if (scope.homework.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.homework[key]);
+          }
+        }
+        if (validator.isHomeworkValid()) {
+          var starttime = scope.getTime(scope.homework.starttime);
+          var endtime = scope.getTime(scope.homework.endtime);
+          if (endtime > starttime) {
+            $http.post('/addHomework', scope.homework).
+              success(function () {
+                $('#reflesh').click();
+                $('.close').click();
+                element.parents('.modal-content').find('.error').text('').hide();
+              }).error(function (err) {
+                element.parents('.modal-content').find('.error').text(err).show();
+              });
+          } else {
+            element.parents('.modal-content').find('.error').text('请确定开始时间早于结束时间').show();
+          }
+        } else {
+          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);
+
+module.directive( "editHomework", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        for (var key in scope.homework) {
+          if (scope.homework.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.homework[key]);
+          }
+        }
+        if (validator.isHomeworkValid()) {
+          var starttime = scope.getTime(scope.homework.starttime);
+          var endtime = scope.getTime(scope.homework.endtime);
+          if (endtime > starttime) {
+            $http.post('/editHomework', scope.homework).
+              success(function () {
+                $('#reflesh').click();
+                $('.close').click();
+                element.parents('.modal-content').find('.error').text('').hide();
+              }).error(function (err) {
+                element.parents('.modal-content').find('.error').text(err).show();
+              });
+          } else {
+            element.parents('.modal-content').find('.error').text('请确定开始时间早于结束时间').show();
+          }
+        } else {
+          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);
+
+module.directive( "deleteHomework", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        for (var key in scope.homework) {
+          if (scope.homework.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.homework[key]);
+          }
+        }
+        if (validator.isDeleteHomeworkValid()) {
+          $http.post('/deleteHomework', scope.homework).
+            success(function () {
+              $('#reflesh').click();
+              $('.close').click();
+              element.parents('.modal-content').find('.error').text('').hide();
+            }).error(function (err) {
+              element.parents('.modal-content').find('.error').text(err).show();
+            });
+        } else {
+          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);

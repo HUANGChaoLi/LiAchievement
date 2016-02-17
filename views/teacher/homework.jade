@@ -1,0 +1,136 @@
+.row-fluid
+  .span12
+    .panel.panel-default
+      .panel-heading
+        .container-fluid
+          .row-fluid
+            .col-xs-6.span6
+              button.btn.btn-large.btn-success.btn-block(type='button', data-toggle='modal', data-target='#addHomework', remove-homeworkname) 
+                h5 添加单位作业
+            .col-xs-6.span6
+              button.btn.btn-large.btn-danger.btn-block(type='button', data-toggle='modal', data-target='#deleteHomework', remove-homeworkname) 
+                h5 删除单位作业
+      .panel-body
+        .container-fluid
+            .row-fluid
+              .col-xs-3.span3
+                button#reflesh.btn.btn-default.btn-block(type='button', reflesh-homeworks)
+                  strong
+                    i.fa.fa-refresh
+                    | &nbsp;（{{homework.classname}}）作业列表
+              .col-xs-9.span9
+                input.form-control(type='text', ng-model='search', placeholder='搜索')
+    hr
+    .container-fluid
+      .row-fluid
+        .col-md-4.text-center(ng-repeat='Homework in homeworks| filter:search')
+          .panel.panel-primary
+            .panel-heading
+              h3.panel-title(ng-data-homeworkname='{{Homework.homeworkname}}')
+                | 作业{{$index + 1}}：{{Homework.homeworkname}}
+                span.label.pull-right(ng-data-starttime='{{Homework.starttime}}', ng-data-endtime='{{Homework.endtime}}', class='label-{{Homework.look}}') {{Homework.state}}
+                span.badge.pull-right 
+                  a(href='{{Homework.link}}') 作业链接
+            .panel-body.homework-img-body
+              img.homework-img(src='/images/homework.png', alt='')
+            .panel-footer
+              button.btn.btn-success.classfooter(type='button', data-toggle='modal', data-target='#editHomework', get-homework-info) 编辑作业
+              button.btn.btn-danger.classfooter(type='button', data-toggle='modal', data-target='#deleteHomework', get-homeworkname) 删除作业
+
+//蒙版
+div
+  // 添加单位作业
+  #addHomework.modal.fade(aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true')
+            | ×
+          h4.modal-title
+            | 添加单位作业
+        .modal-body
+          form.bs-example.bs-example-form(role='form')
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-home
+              input.form-control(type='text', name='classname', ng-model='homework.classname', disabled='disable', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-tags
+              input.form-control(type='text', name='homeworkname', placeholder='作业名称', ng-model='homework.homeworkname', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-link
+              input.form-control(type='text', name='link', placeholder='作业链接,格式(http://...)', ng-model='homework.link', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-hourglass-start
+              input.form-control(type='text', name='starttime', placeholder='开始时间,格式(年:月:日:时),而且时间要晚于当前时间', ng-model='homework.starttime', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-hourglass-end
+              input.form-control(type='text', name='endtime', placeholder='结束时间,格式(年:月:日:时),而且时间要晚于开始时间', ng-model='homework.endtime', valid)
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal')
+            | 关闭
+          button.btn.btn-primary(type='button', add-homework)
+            | 添加作业
+          .alert.alert-danger.error(role='alert')
+  // 删除单位作业
+  #deleteHomework.modal.fade(aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-hidden='true')
+              | ×
+            h4.modal-title
+              | 删除单位作业
+          .modal-body
+            form.bs-example.bs-example-form(role='form')
+              .input-group.input-group-lg
+                span.input-group-addon
+                  i.fa.fa-home
+                input.form-control(type='text', name='classname', ng-model='homework.classname', disabled='disable', valid)
+              .input-group.input-group-lg
+                span.input-group-addon
+                  i.fa.fa-tags
+                input.form-control(type='text', name='homeworkname', placeholder='作业名称', ng-model='homework.homeworkname', valid)
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal')
+              | 关闭
+            button.btn.btn-primary(type='button', delete-homework)
+              | 删除作业
+            .alert.alert-danger.error(role='alert')
+  // 添加单位作业
+  #editHomework.modal.fade(aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true')
+            | ×
+          h4.modal-title
+            | 修改单位作业
+        .modal-body
+          form.bs-example.bs-example-form(role='form')
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-tags
+              input.form-control(type='text', name='homeworkname', placeholder='作业名称', ng-model='homework.homeworkname', disabled='disable', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-link
+              input.form-control(type='text', name='link', placeholder='作业链接,格式(http://...)', ng-model='homework.link', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-hourglass-start
+              input.form-control(type='text', name='starttime', placeholder='开始时间,格式(年:月:日:时),而且时间要晚于当前时间', ng-model='homework.starttime', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-hourglass-end
+              input.form-control(type='text', name='endtime', placeholder='结束时间,格式(年:月:日:时),而且时间要晚于开始时间', ng-model='homework.endtime', valid)
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal')
+            | 关闭
+          button.btn.btn-primary(type='button', edit-homework)
+            | 修改作业
+          .alert.alert-danger.error(role='alert')

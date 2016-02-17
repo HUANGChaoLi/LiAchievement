@@ -20,6 +20,7 @@ module.exports = function (db) {
     addClass: function (newClass) {
       newClass.ta = [];
       newClass.student = [];
+      newClass.homework = [];
       return classes.insert(newClass);
     },
 
@@ -279,8 +280,115 @@ module.exports = function (db) {
       } else {
         return "表单信息不正确";
       }
-    }
+    },
 
+    getAllHomeworks: function (currentClass) {
+      return classes.findOne({classname: currentClass.classname}, {"homework": 1}).then(function (allHomeworks){
+        return new Promise(function (resolve, reject) {
+          if (allHomeworks) {
+            resolve(allHomeworks.homework);
+          } else {
+            reject("error in getAllHomeworks");
+          }
+        });
+      });
+    },
+
+    addHomework: function (newHomework) {
+      return classes.findOne({classname: newHomework.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var Homeworks = existedClass.homework;
+            for (var i = 0; i < Homeworks.length; i++) {
+              if (Homeworks[i].homeworkname == newHomework.homeworkname) {
+                reject('已经存在该作业,如果需要修改作业请在列表操作');
+                break;
+              }
+            }
+            if (i == Homeworks.length) {
+              var thisClassname = newHomework.classname;
+              delete newHomework.classname;
+              Homeworks.push(newHomework);
+              classes.updateOne({classname: thisClassname}, {$set: {homework : Homeworks}}).then(resolve);
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    deleteHomework: function (oldHomework) {
+      return classes.findOne({classname: oldHomework.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var Homeworks = existedClass.homework;
+            for (var i = 0; i < Homeworks.length; i++) {
+              if (Homeworks[i].homeworkname == oldHomework.homeworkname) break;
+            }
+            if (Homeworks.length == i) {
+                reject('不存在该作业');
+            } else {
+              Homeworks.splice(i, 1);
+              classes.updateOne({classname: oldHomework.classname}, {$set: {homework : Homeworks}}).then(resolve);
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    editHomework: function (currentHomework) {
+      return classes.findOne({classname: currentHomework.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var Homeworks = existedClass.homework;
+            for (var i = 0; i < Homeworks.length; i++) {
+              if (Homeworks[i].homeworkname == currentHomework.homeworkname) break;
+            }
+            if (Homeworks.length == i) {
+                reject('不存在该作业');
+            } else {
+              for (var key in Homeworks[i]) {
+                if (Homeworks[i].hasOwnProperty(key)) {
+                  Homeworks[i][key] = currentHomework[key];
+                }
+              }
+              classes.updateOne({classname: currentHomework.classname}, {$set: {homework : Homeworks}}).then(resolve);
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    checkHomeworkValid: function (homework) {
+      for (var key in homework) {
+        if (homework.hasOwnProperty(key)) {
+          validator.isFieldValid(key, homework[key]);
+        }
+      }
+      if (validator.isHomeworkValid()) {
+        return null;
+      } else {
+        return "表单信息不正确";
+      }
+    },
+
+    checkDeleteHomeworkValid: function (homework) {
+      for (var key in homework) {
+        if (homework.hasOwnProperty(key)) {
+          validator.isFieldValid(key, homework[key]);
+        }
+      }
+      if (validator.isDeleteHomeworkValid()) {
+        return null;
+      } else {
+        return "表单信息不正确";
+      }
+    }
 
   };
 }

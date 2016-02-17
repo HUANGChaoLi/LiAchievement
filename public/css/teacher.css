@@ -85,3 +85,12 @@ a {
   text-align: center;
   padding: 8px;
 }
+
+.homework-img-body {
+  padding: 0;
+  overflow: hidden;
+}
+
+.homework-img {
+  width: 100%;
+}

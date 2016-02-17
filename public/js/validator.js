@@ -39,7 +39,53 @@ var validator = {
     stuGroup: {
       status: false,
       errorMessage: '请输入大约零的一位数字'
+    },
+    homeworkname: {
+      status: false,
+      errorMessage: '请输入正确的作业名称'
+    },
+    link: {
+      status: false,
+      errorMessage: '请输入以下格式的链接(http://...)'
+    },
+    starttime: {
+      status: false,
+      errorMessage: '请输入以下格式的时间(年:月:日:时),而且时间要晚于当前时间'
+    },
+    endtime: {
+      status: false,
+      errorMessage: '请输入以下格式的时间(年:月:日:时),而且时间要晚于开始时间'
     }
+  }, 
+
+  isHomeworknameValid: function (homeworkname){
+    return this.form.homeworkname.status = (homeworkname != "");
+  }, 
+
+  isLinkValid: function (link){
+    // return this.form.link.status = /^http:\/\/*/.test(link);
+    return this.form.link.status = link != '';
+  }, 
+
+  isTimeValid: function (Time){
+    var result = /^[0-9]{4}:[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/.test(Time);
+    if (result) {
+      var numarr = Time.split(':');
+      var hour = numarr.pop();
+      var time = new Date(numarr.join(','));
+      time.setHours(hour);
+      var today = new Date();
+      if (time == 'Invalid Date' || time < today) result = false;
+    }
+    return result;
+  }, 
+
+  isStarttimeValid: function (starttime){
+    return this.form.starttime.status = this.isTimeValid(starttime);
+  }, 
+
+  isEndtimeValid: function (endtime){
+    return this.form.endtime.status = this.isTimeValid(endtime);
   }, 
 
   isUsernameValid: function (username){
@@ -144,6 +190,15 @@ var validator = {
 
   isDeleteStudentValid: function () {
     return this.form.classname.status && this.form.username.status;
+  },
+
+  isHomeworkValid: function () {
+    return this.form.classname.status && this.form.homeworkname.status &&
+           this.form.link.status && this.form.starttime.status && this.form.endtime.status ;
+  },
+
+  isDeleteHomeworkValid: function () {
+    return this.form.classname.status && this.form.homeworkname.status;
   }
 }
 

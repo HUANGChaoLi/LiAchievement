@@ -170,10 +170,62 @@ module.exports = function (db) {
       var currentStudent = req.body;
       var validError = classManager.checkStudentValid(currentStudent);
       if (validError) {
-        res.status(403).end('老师助理表单不合法');
+        res.status(403).end('学生表单不合法');
       } else {
         // 检查用户是否存在。。。
         classManager.editStudent(currentStudent).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    getAllHomeworks: function (req, res, next) {
+      var currentClass = req.body;
+      classManager.getAllHomeworks(currentClass).then(function (allHomeworks) {
+        res.json(allHomeworks);
+      }).catch(function (err) {
+        console.log(err);
+        res.status(403).end("服务器尚未找到班级作业信息");
+      });
+    },
+
+    addHomework: function (req, res, next) {
+      var newHomework = req.body;
+      var validError = classManager.checkHomeworkValid(newHomework);
+      if (validError) {
+        res.status(403).end('作业表单不合法');
+      } else {
+        classManager.addHomework(newHomework).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    deleteHomework: function (req, res, next) {
+      var oldHomework = req.body;
+      var validError = classManager.checkDeleteHomeworkValid(oldHomework);
+      if (validError) {
+        res.status(403).end('作业表单不合法');
+      } else {
+        classManager.deleteHomework(oldHomework).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    editHomework: function (req, res, next) {
+      var currentHomework = req.body;
+      var validError = classManager.checkHomeworkValid(currentHomework);
+      if (validError) {
+        res.status(403).end('作业表单不合法');
+      } else {
+        classManager.editHomework(currentHomework).then(function () {
           res.end();
         }).catch(function (err) {
           res.status(403).end(err);

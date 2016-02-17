@@ -18,6 +18,10 @@ module.config(['$routeProvider', '$locationProvider', function($routeProvider, $
       templateUrl: '../../teacher/group',
       controller: groupCtrl
     }).
+    when('/homework/:classname', {
+      templateUrl: '../../teacher/homework',
+      controller: homeworkCtrl
+    }).
     otherwise({
       redirectTo: '/class'
     });
@@ -40,38 +44,6 @@ module.service( 'currentClass', [ '$rootScope', '$http' , function( $rootScope, 
     };
     service.class.adminname = $('#adminname').attr('ng-data-adminname');
     return service;
-}]);
-
-
-module.directive( "getClass", ['$location',  function($location) {
-  return {
-    link: function( scope, element, attrs ) {
-      element.bind( "click", function() {
-        $location.path('/class')
-        scope.$apply();
-      });
-    }
-  }
-}]);
-
-module.directive( "getClassname", ['$location', 'currentClass', function($location, currentClass) {
-  return {
-    link: function( scope, element, attrs ) {
-      element.bind( "click", function() {
-        currentClass.changeClassname(element.parents('.panel').find('.panel-title').eq(0).attr('ng-data-classname'));
-      });
-    }
-  }
-}]);
-
-module.directive( "removeClassname", ['$location', 'currentClass', function($location, currentClass) {
-  return {
-    link: function( scope, element, attrs ) {
-      element.bind( "click", function() {
-        currentClass.changeClassname('');
-      });
-    }
-  }
 }]);
 
 //单个班级操作
@@ -103,6 +75,17 @@ module.directive( "seeGroup", ['$location', 'currentClass', function($location, 
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
         $location.path('/group/' + currentClass.getClassname());
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "editHomework", ['$location', 'currentClass', function($location, currentClass) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        $location.path('/homework/' + currentClass.getClassname());
         scope.$apply();
       });
     }
