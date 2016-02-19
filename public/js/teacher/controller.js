@@ -212,32 +212,6 @@ module.directive( "addTa", ['$http',  function($http) {
   }
 }]);
 
-module.directive( "editTa", ['$http',  function($http) {
-  return {
-    link: function( scope, element, attrs ) {
-      element.bind( "click", function() {
-        for (var key in scope.Ta) {
-          if (scope.Ta.hasOwnProperty(key)) {
-            validator.isFieldValid(key, scope.Ta[key]);
-          }
-        }
-        if (validator.isTaValid()) {
-          $http.post('/editTa', scope.Ta).
-            success(function () {
-              $('#reflesh').click();
-              $('.close').click();
-              element.parents('.modal-content').find('.error').text('').hide();
-            }).error(function (err) {
-              element.parents('.modal-content').find('.error').text(err).show();
-            });
-        } else {
-          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
-        }
-      });
-    }
-  }
-}]);
-
 module.directive( "deleteTa", ['$http',  function($http) {
   return {
     link: function( scope, element, attrs ) {
@@ -292,11 +266,28 @@ module.directive( "seeTruename", ['$http',  function($http) {
   }
 }]);
 
+module.directive( "seeEmail", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.Ta.username = element.parents('tr').eq(0).find('td').eq(1).text();
+        scope.$apply();
+        $http.post('/getUserInfo', scope.Ta).
+          success(function (user) {
+            element.text(user.email);
+          }).error(function (err) {
+            element.text(err);
+          });
+      });
+    }
+  }
+}]);
+
 module.directive( "removeUsername", [function() {
   return {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        scope.Ta.username = scope.Ta.group = '';
+        scope.Ta.username = '';
         scope.$apply();
       });
     }
@@ -443,6 +434,23 @@ module.directive( "seeStudentTruename", ['$http',  function($http) {
         $http.post('/getUserInfo', scope.student).
           success(function (user) {
             element.text(user.truename);
+          }).error(function (err) {
+            element.text(err);
+          });
+      });
+    }
+  }
+}]);
+
+module.directive( "seeStudentEmail", ['$http',  function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.student.username = element.parents('tr').eq(0).find('td').eq(1).text();
+        scope.$apply();
+        $http.post('/getUserInfo', scope.student).
+          success(function (user) {
+            element.text(user.email);
           }).error(function (err) {
             element.text(err);
           });

@@ -27,10 +27,10 @@
                 strong 姓名
             th
               h4
-                strong 负责班别
+                strong 邮箱
             th
               h4
-                strong 负责组别
+                strong 负责班别
             th
               h4
                 strong 处理
@@ -40,10 +40,10 @@
             td {{ta.username}}
             td
               button.btn.btn-link(type='button', get-username, see-truename) 查看真实姓名
-            td {{Ta.classname}}
-            td {{ta.group}}
             td
-              button.btn.btn-warning(type='button', data-toggle='modal', data-target='#editTa', get-username='') 更改组别
+              button.btn.btn-link(type='button', get-username, see-email) 查看邮箱
+            td {{Ta.classname}}
+            td
               button.btn.btn-danger(type='button', data-toggle='modal', data-target='#deleteTa', get-username='') 删除该助理
 //蒙版
 div         
@@ -61,40 +61,11 @@ div
               span.input-group-addon
                 i.fa.fa-user &nbsp;
               input.form-control(type='text', name='username', placeholder='用户名', ng-model='Ta.username', valid)
-            .input-group.input-group-lg
-              span.input-group-addon
-                i.fa.fa-users
-              input.form-control(type='text', name='group', placeholder='负责组别（多组别请以英文逗号分隔）', ng-model='Ta.group', valid)
         .modal-footer
           button.btn.btn-default(type='button', data-dismiss='modal')
             | 关闭
           button.btn.btn-primary(type='button', add-ta)
             | 添加该老师助理
-          .alert.alert-danger.error(role='alert')
-
-  #editTa.modal.fade(aria-hidden='true')
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button.close(type='button', data-dismiss='modal', aria-hidden='true')
-            | ×
-          h4.modal-title
-            | 编辑一位老师助理
-        .modal-body
-          form.bs-example.bs-example-form(role='form')
-            .input-group.input-group-lg
-              span.input-group-addon
-                i.fa.fa-user &nbsp;
-              input.form-control(type='text', disabled, name='username', placeholder='用户名', ng-model='Ta.username', valid)
-            .input-group.input-group-lg
-              span.input-group-addon
-                i.fa.fa-users
-              input.form-control(type='text', name='group', placeholder='负责组别（多组别请以英文逗号分隔）', ng-model='Ta.group', valid)
-        .modal-footer
-          button.btn.btn-default(type='button', data-dismiss='modal')
-            | 关闭
-          button.btn.btn-primary(type='button', edit-ta)
-            | 更改该老师助理信息
           .alert.alert-danger.error(role='alert')
 
   #deleteTa.modal.fade(aria-hidden='true')

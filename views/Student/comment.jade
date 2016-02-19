@@ -1,0 +1,30 @@
+.container-fluid
+  .row-fluid
+    .span12
+      ul.nav.nav-tabs
+        li.active
+          a(see-comment) 查看评审
+        li
+          a(do-comment) 评审
+.container-fluid#see
+  .row-fluid
+    .span12
+      .list-group
+        .list-group-item.active.comment
+          .text 啊哈哈
+          .student-score 100
+        .list-group-item.active.comment.comment-student
+          .text 啊哈哈
+          .student-score 100
+.container-fluid#do
+  .row-fluid
+    .span12
+      .list-group
+        .list-group-item.active.comment.comment-student
+          textarea.input-text 啊哈哈
+          input.input-score(placeholder="输入成绩")
+          button.btn.btn-warning.btn-large.submitbutton(type='button') 提交评审
+        .list-group-item.active.comment
+          textarea.input-text 啊哈哈
+          input.input-score(placeholder="输入成绩")
+          button.btn.btn-warning.btn-large.submitbutton(type='button') 提交评审

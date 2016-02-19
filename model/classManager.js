@@ -24,6 +24,18 @@ module.exports = function (db) {
       return classes.insert(newClass);
     },
 
+    getClassInfo: function (currentClass) {
+      return classes.findOne({classname: currentClass.classname}).then(function (thisClass) {
+        return new Promise(function (resolve, reject) {
+          if (thisClass) {
+            resolve(thisClass);
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      })
+    },
+
     deleteClass: function (oldClass) {
       return classes.deleteOne({adminname: oldClass.adminname, classname: oldClass.classname}).then(function (result){
         return new Promise(function (resolve, reject){
@@ -75,7 +87,6 @@ module.exports = function (db) {
             if (i == TAs.length) {
               var newOne = {};
               newOne.username = newTa.username;
-              newOne.group = newTa.group;
               classes.updateOne({classname: newTa.classname}, {$push: {ta: newOne}}).then(resolve);
             }
           } else {
@@ -98,27 +109,6 @@ module.exports = function (db) {
             } else {
               TAs.splice(i, 1);
               classes.updateOne({classname: oldTa.classname}, {$set: {ta : TAs}}).then(resolve);
-            }
-          } else {
-            reject('不存在该班级');
-          }
-        });
-      });
-    },
-
-    editTa: function (currentTa) {
-      return classes.findOne({classname: currentTa.classname}).then(function (existedClass) {
-        return new Promise(function (resolve, reject){
-          if (existedClass) {
-            var TAs = existedClass.ta;
-            for (var i = 0; i < TAs.length; i++) {
-              if (TAs[i].username == currentTa.username) break;
-            }
-            if (TAs.length == i) {
-                reject('不存在该助理');
-            } else {
-              TAs[i].group = currentTa.group;
-              classes.updateOne({classname: currentTa.classname}, {$set: {ta : TAs}}).then(resolve);
             }
           } else {
             reject('不存在该班级');
@@ -180,6 +170,7 @@ module.exports = function (db) {
               var newOne = {};
               newOne.username = newStudent.username;
               newOne.stuGroup = newStudent.stuGroup;
+              newOne.homeworkinfo = newStudent.homeworkinfo;
               classes.updateOne({classname: newStudent.classname}, {$push: {student: newOne}}).then(resolve);
             }
           } else {
@@ -309,7 +300,28 @@ module.exports = function (db) {
               var thisClassname = newHomework.classname;
               delete newHomework.classname;
               Homeworks.push(newHomework);
-              classes.updateOne({classname: thisClassname}, {$set: {homework : Homeworks}}).then(resolve);
+              //给每个学生添加新的作业的的信息
+              var newOne = existedClass.student;
+              for (var i = 0; i < newOne.length; i++) {
+                if (!newOne[i].homeworkinfo[newHomework.homeworkname]) {
+                  newOne[i].homeworkinfo[newHomework.homeworkname] = {};
+                  newOne[i].homeworkinfo[newHomework.homeworkname].ta = {};
+                  newOne[i].homeworkinfo[newHomework.homeworkname].ta.grade = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].ta.comment = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].grade = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].comment = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].classrank = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].grouprank = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].githublink = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].filelink = '';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].imglink = '/images/unsubmit.jpg';
+                  newOne[i].homeworkinfo[newHomework.homeworkname].classmate = {};
+                  console.log('给' + newOne[i].username + '添加' + newHomework.homeworkname +'成功')
+                } else {
+                  console.log("添加作业函数有误");
+                }
+              }
+              classes.updateOne({classname: thisClassname}, {$set: {homework : Homeworks, student: newOne}}).then(resolve);
             }
           } else {
             reject('不存在该班级');
@@ -329,8 +341,13 @@ module.exports = function (db) {
             if (Homeworks.length == i) {
                 reject('不存在该作业');
             } else {
+              //删除所有的学生的该作业信息
+              var newOne = existedClass.student;
+              for (var j = 0; j < newOne.length; j++) {
+                delete newOne[j].homeworkinfo[oldHomework.homeworkname]
+              }
               Homeworks.splice(i, 1);
-              classes.updateOne({classname: oldHomework.classname}, {$set: {homework : Homeworks}}).then(resolve);
+              classes.updateOne({classname: oldHomework.classname}, {$set: {homework : Homeworks, student: newOne}}).then(resolve);
             }
           } else {
             reject('不存在该班级');
@@ -388,6 +405,29 @@ module.exports = function (db) {
       } else {
         return "表单信息不正确";
       }
+    },
+
+    //学生端函数 
+    getStuHomeworkInfo: function (homework) {
+      return classes.findOne({classname: homework.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].username == homework.username) {
+                break;
+              }
+            }
+            if (i == students.length) {
+              reject('不存在该用户的作业信息');
+            } else {
+              resolve(students[i].homeworkinfo);
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
     }
 
   };

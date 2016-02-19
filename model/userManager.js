@@ -14,6 +14,13 @@ module.exports = function (db) {
       var sha1 = crypto.createHash("sha1");
       sha1.update(user.password);
       user.password = sha1.digest('hex');
+      if (user.limit == '老师助理') {
+        user.classname = '';
+      }
+      if (user.limit == '学生') {
+        user.group = '';
+        user.classname = '';
+      }
       return registry.insert(user);
     },
 
@@ -37,6 +44,13 @@ module.exports = function (db) {
                 var sha1 = crypto.createHash("sha1");
                 sha1.update(user.password);
                 user.password = sha1.digest('hex');
+                if (user.limit == '老师助理') {
+                  user.classname = '';
+                }
+                if (user.limit == '学生') {
+                  user.group = '';
+                  user.classname = '';
+                }
                 registry.insert(user).then(function () {
                   console.log(user.username + '用户注册成功.');
                 });
@@ -125,6 +139,42 @@ module.exports = function (db) {
           }
         });
       })
+    },
+
+    setUserGroup: function (username, userGroup) {
+      return registry.findOne({username: username}).then(function (registeredUser){
+        return new Promise(function (resolve, reject){
+          if (registeredUser) {
+            registry.updateOne({username: username}, {$set: {group: userGroup}}).then(resolve);
+          } else {
+            reject("该用户不存在");
+          }
+        });
+      });
+    },
+
+    setUserClassname: function (username, userClassname) {
+      return registry.findOne({username: username}).then(function (registeredUser){
+        return new Promise(function (resolve, reject){
+          if (registeredUser) {
+            registry.updateOne({username: username}, {$set: {classname: userClassname}}).then(resolve);
+          } else {
+            reject("该用户不存在");
+          }
+        });
+      });
+    },
+
+    setUserGroupAndClassname: function (username, userGroup, userClassname) {
+      return registry.findOne({username: username}).then(function (registeredUser){
+        return new Promise(function (resolve, reject){
+          if (registeredUser) {
+            registry.updateOne({username: username}, {$set: {group: userGroup, classname: userClassname}}).then(resolve);
+          } else {
+            reject("该用户不存在");
+          }
+        });
+      });
     },
 
     getAllUsers: function () {

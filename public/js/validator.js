@@ -36,10 +36,6 @@ var validator = {
       status: false,
       errorMessage: '请输入正确的管理员名称'
     },
-    group: {
-      status: false,
-      errorMessage: '请输入大约零的数字(多位以英文逗号相隔)'
-    },
     stuGroup: {
       status: false,
       errorMessage: '请输入大约零的一位数字'
@@ -184,7 +180,7 @@ var validator = {
   },
 
   isTaValid: function () {
-    return this.form.classname.status && this.form.username.status && this.form.group.status;
+    return this.form.classname.status && this.form.username.status;
   },
 
   isDeleteTaValid: function () {

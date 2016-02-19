@@ -98,8 +98,6 @@ module.exports = function (db) {
 
   app.post('/deleteTa', Class.deleteTa);
 
-  app.post('/editTa', Class.editTa);
-
   // Student
 
 
@@ -123,6 +121,8 @@ module.exports = function (db) {
   app.post('/deleteHomework', Class.deleteHomework);
 
   app.post('/editHomework', Class.editHomework);
+
+  app.post('/getStuHomeworkInfo', Class.getStuHomeworkInfo);
 
   // Blog
 
@@ -157,6 +157,11 @@ module.exports = function (db) {
   app.get('/teacher/:name', function (req, res, next){
     var name = req.params.name;
     res.render('teacher/' + name);
+  });
+
+  app.get('/student/:name', function (req, res, next){
+    var name = req.params.name;
+    res.render('student/' + name);
   });
 
 // redirect all others to the index (HTML5 history)

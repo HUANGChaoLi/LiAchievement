@@ -1,0 +1,21 @@
+.container-fluid
+  .row-fluid
+    .col-md-12.span12
+      .score
+        #container(style='width:99%;margin:auto')
+hr
+br
+.container-fluid
+  .row-fluid
+    .col-md-4.text-center(ng-repeat='Homework in homeworks| filter:search')
+      .panel.panel-primary.homework(class='panel-{{Homework.state}}', ng-data-id='{{Homework.homeworkname}}')
+        .panel-heading
+          h3.panel-title(ng-data-homeworkname='{{Homework.homeworkname}}')
+            | 作业{{$index + 1}}：{{Homework.homeworkname}}
+            span.label.pull-right(ng-data-starttime='{{Homework.starttime}}', ng-data-endtime='{{Homework.endtime}}', class='label-{{Homework.look}}') {{Homework.state}}
+        .panel-body.homework-img-body
+          img.homework-img(src='/images/homework.png', alt='')
+        .panel-footer
+          a.link(href='{{Homework.link}}') 作业链接
+          button.btn.btn-link.work(type='button', stu-comment) {{Homework.comment}}
+          button.btn.btn-link.work(type='button', stu-comment) {{Homework.work}}

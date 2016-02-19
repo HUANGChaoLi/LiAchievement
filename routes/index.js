@@ -37,7 +37,7 @@ module.exports = function (db) {
     index: function(req, res, next) {
         // if (!req.session.user) {
           //res.sendFile('teacher.html', { root: path.join(__dirname, '../views') });
-          res.render('index');
+          res.render('Student');
         // } else {
         //   res.render('home', {user: req.session.user});
         // }

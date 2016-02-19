@@ -5,6 +5,20 @@ body {
   margin-top: 20px;
 }
 
+.panel-end,
+.panel-end .panel-body,
+.panel-end .panel-heading {
+  background-color: #988A8A;
+  border-color: #988A8A
+}
+
+.panel-future,
+.panel-future .panel-body,
+.panel-future .panel-heading {
+  background-color: #009688;
+  border-color: #009688;
+}
+
 #project {
   padding-left: 55px;
   font-size: 30px;

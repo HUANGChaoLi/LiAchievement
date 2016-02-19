@@ -32,6 +32,9 @@
                 strong 姓名
             th
               h4
+                strong 邮箱
+            th
+              h4
                 strong 所在班别
             th
               h4
@@ -45,6 +48,8 @@
             td {{Student.username}}
             td 
               button.btn.btn-link(type='button', see-student-truename) 查看真实姓名
+            td 
+              button.btn.btn-link(type='button', see-student-email) 查看邮箱
             td {{student.classname}}
             td {{Student.stuGroup}}
             td

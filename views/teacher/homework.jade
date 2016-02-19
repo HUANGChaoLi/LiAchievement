@@ -24,7 +24,7 @@
     .container-fluid
       .row-fluid
         .col-md-4.text-center(ng-repeat='Homework in homeworks| filter:search')
-          .panel.panel-primary
+          .panel.panel-primary(class='panel-{{Homework.state}}')
             .panel-heading
               h3.panel-title(ng-data-homeworkname='{{Homework.homeworkname}}')
                 | 作业{{$index + 1}}：{{Homework.homeworkname}}

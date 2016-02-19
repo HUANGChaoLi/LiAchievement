@@ -4,7 +4,7 @@ var fs = require('fs');
 var xlsx = require('node-xlsx');
 
 module.exports = function (db) {
-  // var userManager = require("../model/userManager")(db);
+  var userManager = require("../model/userManager")(db);
   var classManager = require("../model/classManager")(db);
   console.log("class connect yes!!");
 
@@ -26,9 +26,16 @@ module.exports = function (db) {
       if (validError) {
         res.status(403).end('班级表单不合法');
       } else {
-        // 检查用户是否存在。。。
-        classManager.addClass(newClass).then(function () {
-          res.end();
+        userManager.getUserInfo(newClass.adminname).then(function (user) {
+          if (user.limit == '老师') {
+            classManager.addClass(newClass).then(function () {
+              res.end();
+            }).catch(function (err) {
+              res.status(403).end(err);
+            });
+          } else {
+            res.status(403).end('该用户不是老师权限，请再次确认该用户信息');
+          }
         }).catch(function (err) {
           res.status(403).end(err);
         });
@@ -41,9 +48,33 @@ module.exports = function (db) {
       if (validError) {
         res.status(403).end('班级表单不合法');
       } else {
-        // 检查用户是否存在。。。
-        classManager.deleteClass(oldClass).then(function () {
-          res.end();
+        // 默认此时登陆系统检测这个是已存在的老师权限
+        classManager.getClassInfo(oldClass).then(function (oneClass) {
+          //老师助理信息清空
+          for (var i = 0; i < oneClass.ta.length; i++) {
+            (function (username) {
+              userManager.setUserClassname(username, '').then(function () {
+                console.log('清空' + username + '的班级信息成功');
+              }).catch(function (err) {
+                console.log('清空' + username + '的班级信息失败');
+              });
+            })(oneClass.ta[i].username)
+          }
+          //学生信息清空
+          for (var i = 0; i < oneClass.student.length; i++) {
+            (function (username) {
+              userManager.setUserGroupAndClassname(username, '', '').then(function () {
+                console.log('清空' + username + '的组别和班级信息成功');
+              }).catch(function (err) {
+                console.log('清空' + username + '的组别和班级信息失败');
+              });
+            })(oneClass.student[i].username)
+          }
+          classManager.deleteClass(oldClass).then(function () {
+            res.end();
+          }).catch(function (err) {
+            res.status(403).end(err);
+          });
         }).catch(function (err) {
           res.status(403).end(err);
         });
@@ -67,10 +98,26 @@ module.exports = function (db) {
         res.status(403).end('老师助理表单不合法');
       } else {
         // 检查用户是否存在。。。
-        classManager.addTa(newTa).then(function () {
-          res.end();
+        userManager.getUserInfo(newTa.username).then(function (user) {
+          if (user.limit == '老师助理') {
+            if (user.classname == '') {
+              classManager.addTa(newTa).then(function () {
+                userManager.setUserClassname(newTa.username, newTa.classname).then(function () {
+                  res.end();
+                }).catch(function (err) {
+                  res.status(403).end(err);
+                });
+              }).catch(function (err) {
+                res.status(403).end(err);
+              });
+            } else {
+              res.status(403).end("该用户已有班别，添加失败");
+            }
+          } else {
+            res.status(403).end("该用户不是老师助理权限，请再次确认该用户");
+          }
         }).catch(function (err) {
-          res.status(403).end(err);
+          res.status(403).end('不存在该用户,请再次确认用户名。');
         });
       }
     },
@@ -81,24 +128,13 @@ module.exports = function (db) {
       if (validError) {
         res.status(403).end('老师助理表单不合法');
       } else {
-        // 检查用户是否存在。。。
+        // 默认添加的时候确认是老师助理
         classManager.deleteTa(oldTa).then(function () {
-          res.end();
-        }).catch(function (err) {
-          res.status(403).end(err);
-        });
-      }
-    },
-
-    editTa: function (req, res, next) {
-      var currentTa = req.body;
-      var validError = classManager.checkTaValid(currentTa);
-      if (validError) {
-        res.status(403).end('老师助理表单不合法');
-      } else {
-        // 检查用户是否存在。。。
-        classManager.editTa(currentTa).then(function () {
-          res.end();
+          userManager.setUserClassname(oldTa.username, '').then(function () {
+              res.end();
+            }).catch(function (err) {
+              res.status(403).end(err);
+            });
         }).catch(function (err) {
           res.status(403).end(err);
         });
@@ -122,14 +158,51 @@ module.exports = function (db) {
         res.status(403).end('学生表单不合法');
       } else {
         // 检查用户是否存在。。。
-        classManager.addStudent(newStudent).then(function () {
-          res.end();
+        userManager.getUserInfo(newStudent.username).then(function (user) {
+          if (user.limit == '学生') {
+            if (user.group == '' && user.classname == '') {
+              newStudent.homeworkinfo = {};//作业信息存放地方
+              classManager.getClassInfo(newStudent).then(function (oneClass) {
+                //添加作业信息
+                for (var i = 0; i < oneClass.homework.length; i++) {
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname] = {};
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].ta = {};
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].ta.grade = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].ta.comment = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].grade = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].comment = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].classrank = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].grouprank = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].githublink = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].filelink = '';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].imglink = '/images/unsubmit.jpg';
+                  newStudent.homeworkinfo[oneClass.homework[i].homeworkname].classmate = {};
+                }
+
+                classManager.addStudent(newStudent).then(function () {
+                  userManager.setUserGroupAndClassname(newStudent.username, newStudent.stuGroup, newStudent.classname).then(function () {
+                    res.end();              
+                  }).catch(function (err) {
+                    res.status(403).end(err);
+                  });
+                }).catch(function (err) {
+                  res.status(403).end(err);
+                });
+              }).catch(function (err) {
+                res.status(403).end(err);
+              });
+            } else {
+              res.status(403).end('该用户已有班别和组别，添加失败');
+            }
+          } else {
+            res.status(403).end('该用户不是学生权限,请再次确认该用户信息。');
+          }
         }).catch(function (err) {
-          res.status(403).end(err);
+          res.status(403).end('不存在该用户');
         });
       }
     },
-
+//注意未处理
     addStudents: function (req, res, next){
       console.log(req.params.classname)
       if (!req.files[0] || path.extname(req.files[0].originalname) != '.xlsx') {
@@ -157,9 +230,13 @@ module.exports = function (db) {
       if (validError) {
         res.status(403).end('学生表单不合法');
       } else {
-        // 检查用户是否存在。。。
+        // 默认该用户是学生
         classManager.deleteStudent(oldStudent).then(function () {
-          res.end();
+          userManager.setUserGroupAndClassname(oldStudent.username, '', '').then(function () {
+              res.end();              
+            }).catch(function (err) {
+              res.status(403).end(err);
+            });
         }).catch(function (err) {
           res.status(403).end(err);
         });
@@ -172,9 +249,13 @@ module.exports = function (db) {
       if (validError) {
         res.status(403).end('学生表单不合法');
       } else {
-        // 检查用户是否存在。。。
+        // 默认该用户是学生
         classManager.editStudent(currentStudent).then(function () {
-          res.end();
+          userManager.setUserGroupAndClassname(currentStudent.username, currentStudent.stuGroup, currentStudent.classname).then(function () {
+              res.end();
+            }).catch(function (err) {
+              res.status(403).end(err);
+            });
         }).catch(function (err) {
           res.status(403).end(err);
         });
@@ -231,6 +312,15 @@ module.exports = function (db) {
           res.status(403).end(err);
         });
       }
+    },
+
+    getStuHomeworkInfo: function (req, res, next) {
+      var student = req.body;
+      classManager.getStuHomeworkInfo(student).then(function (homeworkinfo) {
+        res.json(homeworkinfo);
+      }).catch(function (err) {
+        res.status(403).end(err);
+      });
     }
 
   };
