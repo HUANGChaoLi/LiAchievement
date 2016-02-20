@@ -155,9 +155,10 @@ function homeworkCtrl($http, $scope) {
               }
           }]
         });
+        $('#container').parents('.span12').eq(0).addClass('score');
         $('text').eq($('text').length - 1).hide()
+        $("#loading").text('');
         for (var i = 0; i < allHomeworks.length; i++) {
-          $("#loading").text('');
           var today = new Date();
           var starttime = $scope.getTime(allHomeworks[i].starttime);
           var endtime = $scope.getTime(allHomeworks[i].endtime);

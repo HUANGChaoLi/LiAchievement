@@ -299,6 +299,7 @@ module.exports = function (db) {
             if (i == Homeworks.length) {
               var thisClassname = newHomework.classname;
               delete newHomework.classname;
+              newHomework.distributeList = [];
               Homeworks.push(newHomework);
               //给每个学生添加新的作业的的信息
               var newOne = existedClass.student;
@@ -401,6 +402,142 @@ module.exports = function (db) {
         }
       }
       if (validator.isDeleteHomeworkValid()) {
+        return null;
+      } else {
+        return "表单信息不正确";
+      }
+    },
+
+    //组别管理
+
+    getAllGroups: function (currentHomework) {
+      return classes.findOne({classname: currentHomework.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var homeworks = existedClass.homework;
+            for (var i = 0; i < homeworks.length; i++) {
+              if (homeworks[i].homeworkname == currentHomework.homeworkname) {
+                break;
+              }
+            }
+            if (i == homeworks.length) {
+              reject('不存在该作业的组别信息');
+            } else {
+              resolve(homeworks[i].distributeList);
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    addGroup: function (newGroup) {
+      return classes.findOne({classname: newGroup.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var homeworks = existedClass.homework;
+            for (var i = 0; i < homeworks.length; i++) {
+              if (homeworks[i].homeworkname == newGroup.homeworkname) {
+                break;
+              }
+            }
+            if (i != homeworks.length) {
+              var NRG = newGroup.reviewgroup, NRDG = newGroup.reviewedgroup;
+              for (var j = 0; j < homeworks[i].distributeList.length; j++) {
+                if (NRG == homeworks[i].distributeList[j].reviewgroup || 
+                    NRG == homeworks[i].distributeList[j].reviewedgroup ||
+                    NRDG == homeworks[i].distributeList[j].reviewgroup || 
+                    NRDG == homeworks[i].distributeList[j].reviewedgroup) {
+                  break;
+                }
+              }
+              if (j == homeworks[i].distributeList.length) {
+                var newOne = {};
+                newOne.reviewgroup = newGroup.reviewgroup;
+                newOne.reviewedgroup = newGroup.reviewedgroup;
+                homeworks[i].distributeList.push(newOne);
+                classes.updateOne({classname: newGroup.classname}, {$set: {homework: homeworks}}).then(resolve);
+              } else {
+                reject('该组别其中一个已经在其他互评组,请重试');
+              }
+            } else {
+              reject("不存在该班级")
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    deleteGroup: function (oldGroup) {
+      return classes.findOne({classname: oldGroup.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var homeworks = existedClass.homework;
+            for (var i = 0; i < homeworks.length; i++) {
+              if (homeworks[i].homeworkname == oldGroup.homeworkname) {
+                break;
+              }
+            }
+            if (i != homeworks.length) {
+              var NRG = oldGroup.reviewgroup, NRDG = oldGroup.reviewedgroup;
+              for (var j = 0; j < homeworks[i].distributeList.length; j++) {
+                if (NRG == homeworks[i].distributeList[j].reviewgroup &&
+                    NRDG == homeworks[i].distributeList[j].reviewedgroup) {
+                  break;
+                }
+              }
+              if (j != homeworks[i].distributeList.length) {
+                homeworks[i].distributeList.splice(j, 1);
+                classes.updateOne({classname: oldGroup.classname}, {$set: {homework: homeworks}}).then(resolve);
+              } else {
+                reject('不存在该组');
+              }
+            } else {
+              reject("不存在该班级")
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    checkGroupsValid: function (groups) {
+      for (var key in groups) {
+        if (groups.hasOwnProperty(key)) {
+          validator.isFieldValid(key, groups[key]);
+        }
+      }
+      if (validator.isGroupsValid()) {
+        return null;
+      } else {
+        return "表单信息不正确";
+      }
+    },
+
+    checkAddGroupValid: function (group) {
+      for (var key in group) {
+        if (group.hasOwnProperty(key)) {
+          validator.isFieldValid(key, group[key]);
+        }
+      }
+      if (validator.isAddGroupValid()) {
+        return null;
+      } else {
+        return "表单信息不正确";
+      }
+    },
+
+    checkDeleteGroupValid: function (group) {
+      for (var key in group) {
+        if (group.hasOwnProperty(key)) {
+          validator.isFieldValid(key, group[key]);
+        }
+      }
+      if (validator.isDeleteGroupValid()) {
         return null;
       } else {
         return "表单信息不正确";

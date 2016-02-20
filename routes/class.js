@@ -314,6 +314,48 @@ module.exports = function (db) {
       }
     },
 
+    getAllGroups: function (req, res, next) {
+      var currentHomework = req.body;
+      var validError = classManager.checkGroupsValid(currentHomework);
+      if (validError) {
+        res.status(403).end('组别表单不合法');
+      } else {
+        classManager.getAllGroups(currentHomework).then(function (allGroups) {
+          res.json(allGroups);
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    addGroup: function (req, res, next) {
+      var newGroup = req.body;
+      var validError = classManager.checkAddGroupValid(newGroup);
+      if (validError) {
+        res.status(403).end('组别表单不合法');
+      } else {
+        classManager.addGroup(newGroup).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    deleteGroup: function (req, res, next) {
+      var oldGroup = req.body;
+      var validError = classManager.checkDeleteGroupValid(oldGroup);
+      if (validError) {
+        res.status(403).end('作业表单不合法');
+      } else {
+        classManager.deleteGroup(oldGroup).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
     getStuHomeworkInfo: function (req, res, next) {
       var student = req.body;
       classManager.getStuHomeworkInfo(student).then(function (homeworkinfo) {

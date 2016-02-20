@@ -1,0 +1,96 @@
+.row-fluid
+  .span12
+    .panel.panel-default
+      .panel-heading
+        button.btn.btn-success.btn-block(type='button', data-toggle='modal', data-target='#addGroup')
+          h5 添加新组别
+      .panel-body
+        .row-fluid
+          .col-xs-3.span3
+            button#reflesh.btn.btn-default.btn-block(type='button', reflesh-group)
+              strong
+                i.fa.fa-refresh
+                |&nbsp;( {{group.homeworkname}} )&nbsp;组别分配列表(相互)
+          .col-xs-9.span9
+            input.form-control(type='text', ng-model='search', placeholder='搜索')
+      table.table.table-bordered.table-striped
+        thead
+          tr
+            th
+              h4
+                strong 序号
+            th
+              h4
+                strong 评论组(被评论组)
+            th
+              h4
+                strong 被评论组(评论组)
+            th
+              h4
+                strong 所在班别
+            th
+              h4
+                strong 作业名
+            th
+              h4
+                strong 处理
+        tbody
+          tr(ng-repeat='Group in Groups| filter:search')
+            td {{$index + 1}}
+            td {{Group.reviewgroup}}
+            td {{Group.reviewedgroup}}
+            td {{group.classname}}
+            td {{group.homeworkname}}
+            td
+              button.btn.btn-danger(type='button', data-toggle='modal', data-target='#deleteGroup', get-group-info) 删除该组
+//蒙版
+div         
+  #addGroup.modal.fade(aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true')
+            | ×
+          h4.modal-title
+            | 给班级({{group.homeworkname}})添加一个互评组
+        .modal-body
+          form.bs-example.bs-example-form(role='form')
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-users
+              input.form-control(type='text', name='reviewgroup', placeholder='评论组(同时是被评论组)', ng-model='group.reviewgroup', valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-users
+              input.form-control(type='text', name='reviewedgroup', placeholder='被评论组(同时是评论组)', ng-model='group.reviewedgroup', valid)
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal')
+            | 关闭
+          button.btn.btn-primary(type='button', add-group)
+            | 添加该互评组
+          .alert.alert-danger.error(role='alert')
+
+  #deleteGroup.modal.fade(aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true')
+            | ×
+          h4.modal-title
+            | 删除一组互评组
+        .modal-body
+          form.bs-example.bs-example-form(role='form')
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-users
+              input.form-control(type='text', name='reviewgroup', placeholder='评论组(同时是被评论组)', ng-model='group.reviewgroup', disabled, valid)
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-users
+              input.form-control(type='text', name='reviewedgroup', placeholder='被评论组(同时是评论组)', ng-model='group.reviewedgroup', disabled, valid)
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal')
+            | 关闭
+          button.btn.btn-primary(type='button', delete-group)
+            | 删除该互评组
+          .alert.alert-danger.error(role='alert')

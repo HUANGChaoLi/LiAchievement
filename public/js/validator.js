@@ -55,7 +55,24 @@ var validator = {
     endtime: {
       status: false,
       errorMessage: '请输入以下格式的时间(年:月:日:时),而且时间要晚于开始时间'
+    },
+    reviewgroup: {
+      status: false,
+      errorMessage: '请输入一个大于零的数字'
+    },
+    reviewedgroup: {
+      status: false,
+      errorMessage: '请输入一个大于零的数字,且与评论组的数字不相同'
     }
+  }, 
+
+  isReviewgroupValid: function (reviewgroup){
+    this.Reviewgroup = reviewgroup;
+    return this.form.reviewgroup.status = (!isNaN(reviewgroup) && (parseInt(reviewgroup) > 0));
+  }, 
+
+  isReviewedgroupValid: function (reviewedgroup){
+    return this.form.reviewedgroup.status = ((reviewedgroup != this.Reviewgroup) && !isNaN(reviewedgroup) && (parseInt(reviewedgroup) > 0));
   }, 
 
   isHomeworknameValid: function (homeworkname){
@@ -202,6 +219,20 @@ var validator = {
 
   isDeleteHomeworkValid: function () {
     return this.form.classname.status && this.form.homeworkname.status;
+  },
+
+  isGroupsValid: function () {
+    return this.form.classname.status && this.form.homeworkname.status;
+  },
+
+  isAddGroupValid: function () {
+    return this.form.classname.status && this.form.homeworkname.status
+          && this.form.reviewgroup.status && this.form.reviewedgroup.status;
+  },
+
+  isDeleteGroupValid: function () {
+    return this.form.classname.status && this.form.homeworkname.status
+          && this.form.reviewgroup.status && this.form.reviewedgroup.status;;
   }
 }
 

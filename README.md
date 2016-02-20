@@ -14,7 +14,7 @@
  <2>class:{
     adminname, 
     classname, 
-    homework[{homewrokname, link, starttime, endtime}], 
+    homework[{homewrokname, link, starttime, endtime, distributeList:[{reviewgroup, reviewedgroup}]}], 
     ta[{username}], 
     student[{username, 
               group, 

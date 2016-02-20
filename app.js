@@ -124,6 +124,14 @@ module.exports = function (db) {
 
   app.post('/getStuHomeworkInfo', Class.getStuHomeworkInfo);
 
+  // group管理
+
+  app.post('/getAllGroups', Class.getAllGroups);
+
+  app.post('/addGroup', Class.addGroup);
+
+  app.post('/deleteGroup', Class.deleteGroup);
+
   // Blog
 
   /*检查是否登录*/
@@ -157,6 +165,11 @@ module.exports = function (db) {
   app.get('/teacher/:name', function (req, res, next){
     var name = req.params.name;
     res.render('teacher/' + name);
+  });
+
+  app.get('/TA/:name', function (req, res, next){
+    var name = req.params.name;
+    res.render('TA/' + name);
   });
 
   app.get('/student/:name', function (req, res, next){

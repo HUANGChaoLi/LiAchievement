@@ -37,7 +37,7 @@ module.exports = function (db) {
     index: function(req, res, next) {
         // if (!req.session.user) {
           //res.sendFile('teacher.html', { root: path.join(__dirname, '../views') });
-          res.render('Student');
+          res.render('Ta');
         // } else {
         //   res.render('home', {user: req.session.user});
         // }
@@ -63,19 +63,8 @@ module.exports = function (db) {
         delete user.rePassword;//删除rePassword
         userManager.checkUserUnique(user).then(function (){
             delete user.rePassword;//不存储重复密码
-
             userManager.createUser(user).then(function (){
               res.end();
-              // userManager.getUserInfo(user.username)
-              //   .then(function (registeredUser){
-              //     req.session.user = registeredUser;
-              //     req.session.cookie.expires = new Date(Date.now() + 1000 * 60 * 30);
-              //     res.json(registeredUser);
-              //   })
-              //   .catch(function (error) {
-              //     console.log("用户查询失败 with error" + error);
-              //     res.status(404).end("用户查询失败");
-              //   });
             }).catch(function(error){
               console.log("用户写入失败");
               res.status(404).end("用户写入失败");

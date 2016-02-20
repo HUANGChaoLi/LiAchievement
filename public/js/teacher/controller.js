@@ -471,18 +471,14 @@ function groupCtrl($scope, $http, $routeParams) {
   $http.post('/getAllTAs', $scope.Ta).
     success(function (allTAs) {
       $scope.TAs = allTAs;
-      // callback();
     }).error(function (err_res) {
       alert(err_res);
-      // callback(err_res);
     });
   $http.post('/getAllStudents', $scope.student).
     success(function (allStudents) {
       $scope.Students = allStudents;
-      // callback();
     }).error(function (err_res) {
       alert(err_res);
-      // callback(err_res);
     });
 }
 
