@@ -202,20 +202,20 @@ module.exports = function (db) {
         });
       }
     },
-//注意未处理
+//注意未处理///暂时去除这个
     addStudents: function (req, res, next){
-      console.log(req.params.classname)
       if (!req.files[0] || path.extname(req.files[0].originalname) != '.xlsx') {
         res.send('请上传xlsx类型文件');
         console.log('文件上传错误');
       } else {
         var obj = xlsx.parse('./uploads/' + req.files[0].originalname);
         var studentsArr = arrToStudents(obj);
-        classManager.addStudents(req.params.classname, studentsArr).then(function () {
+        /*classManager.addStudents(req.params.classname, studentsArr).then(function () {
           res.redirect('/');
         }).catch(function (err) {
           res.end(err);
-        });
+        });*/
+        res.send('尚未完成该功能');
       }
       if (req.files[0]) {
         fs.unlink('./uploads/' + req.files[0].originalname, function (err){
@@ -363,6 +363,107 @@ module.exports = function (db) {
       }).catch(function (err) {
         res.status(403).end(err);
       });
+    },
+
+    getAllTeacherComments: function (req, res, next) {
+      var teacher = req.body;//只有classname和homeworkname
+      classManager.getAllTeacherComments(teacher).then(function (allTeacherComments) {
+        res.json(allTeacherComments);
+      }).catch(function (err) {
+        res.status(403).end(err);
+      });
+    },
+
+    getAllTaComments: function (req, res, next) {
+      var ta = req.body;//只有classname和homeworkname
+      classManager.getAllTaComments(ta).then(function (allTaComments) {
+        res.json(allTaComments);
+      }).catch(function (err) {
+        res.status(403).end(err);
+      });
+    },
+
+    getAllMyComments: function (req, res, next) {
+      var student = req.body;//只有classname和username和homeworkname
+      classManager.getAllMyComments(student).then(function (allMyComments) {
+        res.json(allMyComments);
+      }).catch(function (err) {
+        res.status(403).end(err);
+      });
+    },
+
+    getAllOthersComments: function (req, res, next) {//获取用户该评论的信息；
+      var student = req.body;//只有classname和username和homeworkname
+      userManager.getUserInfo(student.username).then(function (user) {
+        if (user.group != "") {
+          student.group = user.group;
+          classManager.getAllOthersComments(student).then(function (allOthersComments) {
+            res.json(allOthersComments);
+          }).catch(function (err) {
+            res.status(403).end(err);
+          });
+        } else {
+          res.status(403).end('老师尚未给你分配组别');
+        }
+      }).catch(function (err) {
+        res.status(403).end(err);
+      });
+    },
+
+    submitHomework: function (req, res, next) {
+      var newSubmit = req.body;
+      var validError = classManager.checkSubmitHomeworkValid(newSubmit);
+      if (validError) {
+        res.status(403).end("表单有误，请重新输入");
+      } else {
+        classManager.submitHomework(newSubmit).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    submitComment: function (req, res, next) {
+      var newComment = req.body;
+      var validError = classManager.checkSubmitCommentValid(newComment);
+      if (validError) {
+        res.status(403).end("表单有误，请重新输入");
+      } else {
+        classManager.submitComment(newComment).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    submitTaComment: function (req, res, next) {
+      var newComment = req.body;
+      var validError = classManager.checkSubmitCommentValid(newComment);
+      if (validError) {
+        res.status(403).end("表单有误，请重新输入");
+      } else {
+        classManager.submitTaComment(newComment).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    submitTeacherComment: function (req, res, next) {
+      var newComment = req.body;
+      var validError = classManager.checkSubmitCommentValid(newComment);
+      if (validError) {
+        res.status(403).end("表单有误，请重新输入");
+      } else {
+        classManager.submitTeacherComment(newComment).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
     }
 
   };

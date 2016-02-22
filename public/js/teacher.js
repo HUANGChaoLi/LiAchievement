@@ -6,11 +6,11 @@ module.config(['$routeProvider', '$locationProvider', function($routeProvider, $
       templateUrl: '../teacher/class',
       controller: classCtrl
     }).
-    when('/Ta/:classname', {
+    when('/Tas/:classname', {
       templateUrl: '../../teacher/ta',
       controller: taCtrl
     }).
-    when('/student/:classname', {
+    when('/students/:classname', {
       templateUrl: '../../teacher/student',
       controller: studentCtrl
     }).
@@ -21,6 +21,10 @@ module.config(['$routeProvider', '$locationProvider', function($routeProvider, $
     when('/homework/:classname', {
       templateUrl: '../../teacher/homework',
       controller: homeworkCtrl
+    }).
+    when('/comment/:classname/:homeworkname', {
+      templateUrl: '../../../teacher/comment',
+      controller: commentCtrl
     }).
     otherwise({
       redirectTo: '/class'
@@ -52,7 +56,7 @@ module.directive( "seeTa", ['$location', 'currentClass', function($location, cur
   return {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        $location.path('/Ta/' + currentClass.getClassname());
+        $location.path('/Tas/' + currentClass.getClassname());
         scope.$apply();
       });
     }
@@ -63,7 +67,7 @@ module.directive( "seeStudent", ['$location', 'currentClass', function($location
   return {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
-        $location.path('/student/' + currentClass.getClassname());
+        $location.path('/students/' + currentClass.getClassname());
         scope.$apply();
       });
     }
@@ -86,6 +90,18 @@ module.directive( "editHomework", ['$location', 'currentClass', function($locati
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
         $location.path('/homework/' + currentClass.getClassname());
+        scope.$apply();
+      });
+    }
+  }
+}]);
+
+module.directive( "getTeacherComment", ['$location', '$routeParams', function($location, $routeParams) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        var homeworkname = element.parents('.panel-title').eq(0).attr("ng-data-homeworkname");
+        $location.path('/comment/' + $routeParams.classname + '/' + homeworkname);
         scope.$apply();
       });
     }

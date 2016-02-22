@@ -1,10 +1,16 @@
-module.controller( "mainClassCtrl", ['$scope', 'currentClass', function( $scope, currentClass ) {
+module.controller( "mainClassCtrl", ['$scope', 'currentClass', '$http' , function( $scope, currentClass, $http ) {
   $scope.$on( 'currentClass.update', function( event ) {
     $scope.class = currentClass.class;
     $scope.$apply();
   });
   $scope.editUser = {};
   $scope.editUser.username = $('#adminname').attr('ng-data-adminname');
+  $http.post('/getUserInfo', $scope.editUser).
+    success(function (user) {
+      $('#teacherTruename').html(user.truename + "<span class=\'caret\'></span>");
+    }).error(function (err) {
+      alert(err);
+    });
 }]);
 
 module.directive( "editUserPassword", ['$http',  function($http) {
@@ -666,6 +672,48 @@ module.directive( "deleteHomework", ['$http',  function($http) {
             });
         } else {
           element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);
+
+function commentCtrl($scope, $http, $routeParams) {
+  $scope.homework = {};
+  $scope.homework.homeworkname = $routeParams.homeworkname;
+  $scope.homework.classname = $routeParams.classname;
+  $http.post('/getAllTeacherComments', $scope.homework).
+    success(function (allTeacherComments) {
+      $scope.allComments = allTeacherComments;
+    }).error(function (err) {
+      alert(err);
+    });
+}
+
+module.directive( "submitTeacherComment", ["$http", "$routeParams", function($http, $routeParams) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        var num = element.parents(".comment").eq(0).find(".input-score").eq(0).val();
+        if (!isNaN(num) && parseInt(num) >= 0 && parseInt(num) <= 100 &&
+            element.parents(".comment").eq(0).find(".input-text").eq(0).val() != "") {
+            scope.submitC = {};
+            scope.submitC.classname = $routeParams.classname;
+            scope.submitC.homeworkname = $routeParams.homeworkname;
+            scope.submitC.commentuser = element.attr('ng-data-username');
+            scope.submitC.grade = num;
+            scope.submitC.comment = element.parents(".comment").eq(0).find(".input-text").eq(0).val();
+            element.removeClass("btn-danger btn-success");
+            $http.post('/submitTeacherComment', scope.submitC).
+              success(function () {
+                element.removeClass("btn-warning");
+                element.addClass("btn-success");
+              }).error(function (err) {
+                element.addClass("btn-danger");
+                alert(err);
+              });
+        } else {
+          alert("请输入正确的成绩和评论");
         }
       });
     }

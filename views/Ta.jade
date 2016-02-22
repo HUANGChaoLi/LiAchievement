@@ -22,7 +22,7 @@ html
           li
             a#classname
           li
-            a#taname(ng-data-taname='HuangChaoli') 
+            a#taname(ng-data-taname=user.username) 
           li.dropdown
             a.dropdown-toggle#taTruename(data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
             ul.dropdown-menu
@@ -30,7 +30,7 @@ html
                 a.change-password(data-toggle='modal', data-target='#editPassword') 修改密码
               li.divider(role='separator')
               li
-                a.logout(href='#') 退出登陆
+                a.logout(href='/logout') 退出登陆
     div
       .container-fluid(ng-app='taApp')
         p#loading loading...

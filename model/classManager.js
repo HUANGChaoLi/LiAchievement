@@ -544,6 +544,120 @@ module.exports = function (db) {
       }
     },
 
+    //老师端
+
+    getAllTeacherComments: function (teacher) {
+      return classes.findOne({classname: teacher.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            var results = [];
+            for (var i = 0; i < students.length; i++) {
+              var one = {};
+              one.githublink = students[i].homeworkinfo[teacher.homeworkname].githublink;
+              one.imglink = students[i].homeworkinfo[teacher.homeworkname].imglink;
+              one.username = students[i].username;
+              if (students[i].homeworkinfo[teacher.homeworkname].grade != "") {
+                one.grade = students[i].homeworkinfo[teacher.homeworkname].grade;
+                one.comment = students[i].homeworkinfo[teacher.homeworkname].comment;
+              } else if (students[i].homeworkinfo[teacher.homeworkname].ta.grade != "") {
+                one.grade = "TA:" + students[i].homeworkinfo[teacher.homeworkname].ta.grade + "分";
+                one.comment = "您尚未评论,以下是TA评论:" + students[i].homeworkinfo[teacher.homeworkname].ta.comment;
+              } else {
+                one.grade = "";
+                one.comment = "您和老师助理均尚未评分";
+              }
+              results.push(one);
+            }
+            resolve(results);
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    submitTeacherComment: function (newSubmit) {
+      return classes.findOne({classname: newSubmit.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].username == newSubmit.commentuser) {
+                break;
+              }
+            }
+            if (i == students.length) {
+              reject('不存在该评论用户');
+            } else {
+              if (!students[i].homeworkinfo[newSubmit.homeworkname]) {
+                reject('不存在该作业');
+              } else {
+                students[i].homeworkinfo[newSubmit.homeworkname].grade = newSubmit.grade;
+                students[i].homeworkinfo[newSubmit.homeworkname].comment = newSubmit.comment;
+                classes.updateOne({classname: newSubmit.classname}, {$set: {student: students}}).then(resolve);
+              }
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    //Ta端
+
+    getAllTaComments: function (ta) {
+      return classes.findOne({classname: ta.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            var results = [];
+            for (var i = 0; i < students.length; i++) {
+              var one = {};
+              one.githublink = students[i].homeworkinfo[ta.homeworkname].githublink;
+              one.imglink = students[i].homeworkinfo[ta.homeworkname].imglink;
+              one.grade = students[i].homeworkinfo[ta.homeworkname].ta.grade;
+              one.comment = students[i].homeworkinfo[ta.homeworkname].ta.comment;
+              one.username = students[i].username;
+              results.push(one);
+            }
+            resolve(results);
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    submitTaComment: function (newSubmit) {
+      return classes.findOne({classname: newSubmit.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].username == newSubmit.commentuser) {
+                break;
+              }
+            }
+            if (i == students.length) {
+              reject('不存在该评论用户');
+            } else {
+              if (!students[i].homeworkinfo[newSubmit.homeworkname]) {
+                reject('不存在该作业');
+              } else {
+                students[i].homeworkinfo[newSubmit.homeworkname].ta.grade = newSubmit.grade;
+                students[i].homeworkinfo[newSubmit.homeworkname].ta.comment = newSubmit.comment;
+                classes.updateOne({classname: newSubmit.classname}, {$set: {student: students}}).then(resolve);
+              }
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
     //学生端函数 
     getStuHomeworkInfo: function (homework) {
       return classes.findOne({classname: homework.classname}).then(function (existedClass) {
@@ -559,6 +673,188 @@ module.exports = function (db) {
               reject('不存在该用户的作业信息');
             } else {
               resolve(students[i].homeworkinfo);
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    getAllMyComments: function (student) {
+      return classes.findOne({classname: student.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].username == student.username) {
+                break;
+              }
+            }
+            if (i == students.length) {
+              reject('不存在该用户的作业信息');
+            } else {
+              if (!students[i].homeworkinfo[student.homeworkname]) {
+                reject('不存在该作业的评论信息');
+              } else {
+                var results = [];
+                if (students[i].homeworkinfo[student.homeworkname].grade != '') {
+                  var one = {};
+                  one.grade = students[i].homeworkinfo[student.homeworkname].grade; 
+                  one.comment = students[i].homeworkinfo[student.homeworkname].comment;
+                  one.look = "teacher";
+                  results.push(one);
+                }
+                if (students[i].homeworkinfo[student.homeworkname].ta.grade != '') {
+                  var one = {};
+                  one.grade = students[i].homeworkinfo[student.homeworkname].ta.grade;
+                  one.comment = students[i].homeworkinfo[student.homeworkname].ta.comment;
+                  one.look = "ta";
+                  results.push(one);
+                }
+                var classmates = students[i].homeworkinfo[student.homeworkname].classmate;
+                for (var key in classmates) {
+                  if (classmates.hasOwnProperty(key)) {
+                    var one = {};
+                    one.grade = classmates[key].grade;
+                    one.comment = classmates[key].comment;
+                    one.look = "student";
+                    results.push(one);
+                  }
+                }
+                resolve(results);
+              }
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    getAllOthersComments: function (student) {
+      return classes.findOne({classname: student.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var homeworks = existedClass.homework;
+            for (var i = 0; i < homeworks.length; i++) {
+              if (homeworks[i].homeworkname == student.homeworkname) {
+                break;
+              }
+            }
+            if (i == homeworks.length) {
+              reject('不存在该作业信息');
+            } else {
+              var distributeList = homeworks[i].distributeList;
+              var Group = null;//确定要评论的组别
+              for (var j = 0; j < distributeList.length; j++) {
+                if (distributeList[j].reviewgroup == student.group) {
+                  Group = distributeList[j].reviewedgroup;
+                  break;
+                } else if (distributeList[j].reviewedgroup == student.group) {
+                  Group = distributeList[j].reviewgroup;
+                  break;
+                }
+              }
+              if (Group) {
+                var students = existedClass.student;
+                var results = [];
+                var one = {};
+                console.log("bbb")
+                for (var i = 0; i < students.length; i++) {
+                  if (students[i].stuGroup == Group && students[i].homeworkinfo[student.homeworkname]) {
+                    one.imglink = students[i].homeworkinfo[student.homeworkname].imglink;
+                    one.githublink = students[i].homeworkinfo[student.homeworkname].githublink;
+                    one.username = students[i].username;
+                    if (students[i].homeworkinfo[student.homeworkname].classmate[student.username]) {
+                      one.grade = students[i].homeworkinfo[student.homeworkname].classmate[student.username].grade;
+                      one.comment = students[i].homeworkinfo[student.homeworkname].classmate[student.username].comment;
+                    } else {
+                      one.grade = '';
+                      one.comment = '';
+                    }
+                    results.push(one);
+                  }
+                }
+                console.log("cccc")
+                resolve(results);
+              } else {
+                reject('老师助理尚未分配你的互评组');
+              }
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    submitHomework: function (newSubmit) {
+      return classes.findOne({classname: newSubmit.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].username == newSubmit.username) {
+                break;
+              }
+            }
+            if (i == students.length) {
+              reject('不存在该用户');
+            } else {
+              if (!students[i].homeworkinfo[newSubmit.homeworkname]) {
+                reject('不存在该作业');
+              } else {
+                students[i].homeworkinfo[newSubmit.homeworkname].githublink = newSubmit.githublink;
+                students[i].homeworkinfo[newSubmit.homeworkname].imglink = '/images/homework.png';
+                classes.updateOne({classname: newSubmit.classname}, {$set: {student: students}}).then(resolve);
+              }
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    checkSubmitHomeworkValid: function (submit) {
+      for (var key in submit) {
+        if (submit.hasOwnProperty(key)) {
+          validator.isFieldValid(key, submit[key]);
+        }
+      }
+      if (validator.isSubmitHomeworkValid()) {
+        return null;
+      } else {
+        return "表单信息不正确";
+      }
+    },
+
+    checkSubmitCommentValid: function (submit) {
+      return !(!isNaN(submit.grade) && (parseInt(submit.grade) > 0) && (parseInt(submit.grade) <= 100) && (submit.comment != ""));
+    },
+
+    submitComment: function (newSubmit) {
+      return classes.findOne({classname: newSubmit.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].username == newSubmit.commentuser) {
+                break;
+              }
+            }
+            if (i == students.length) {
+              reject('不存在该评论用户');
+            } else {
+              if (!students[i].homeworkinfo[newSubmit.homeworkname]) {
+                reject('不存在该作业');
+              } else {
+                students[i].homeworkinfo[newSubmit.homeworkname].classmate[newSubmit.username] = {};
+                students[i].homeworkinfo[newSubmit.homeworkname].classmate[newSubmit.username].grade = newSubmit.grade;
+                students[i].homeworkinfo[newSubmit.homeworkname].classmate[newSubmit.username].comment = newSubmit.comment;
+                classes.updateOne({classname: newSubmit.classname}, {$set: {student: students}}).then(resolve);
+              }
             }
           } else {
             reject('不存在该班级');

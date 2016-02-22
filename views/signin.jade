@@ -1,0 +1,38 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    link(rel='stylesheet', href='./css/fontawesome/css/font-awesome.css')
+    link(rel='stylesheet', href='./css/signin.css')
+    script(src='./libs/jquery.js')
+    script(src='./js/validator.js')
+    script(src='./js/signin.js')
+    title My Achievement
+  body
+    .nav
+      a#reflesh(href='/')
+        i.fa.fa-users
+      |  &nbsp;I am My Achievement. Welcome to signin! 
+      i.fa.fa-rss
+    .body-wrapper
+      #rightpictrue.pictrue(title="切换背景") &gt;
+      #leftpictrue.pictrue(title="切换背景") &lt;
+      .index-wrapper
+        #signin.index-button 登陆账户
+      .signup-wrapper.signin-wrapper
+        form(action='/', method='post')
+          .input
+            i.fa.fa-user
+            | 用户名 : 
+            input#username(type='text', name='username')
+            .error          
+          .input
+            i.fa.fa-key
+            | 密码 : 
+            input#password(type='password', name='password')
+            .error
+          .submit-button
+            input(type='reset', value='Reset')
+          .submit-button
+            input(type='submit', value='Submit')
+          .form-after x

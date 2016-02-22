@@ -48,6 +48,10 @@ var validator = {
       status: false,
       errorMessage: '请输入正确格式的链接'
     },
+    githublink: {
+      status: false,
+      errorMessage: '请输入正确格式的github链接'
+    },
     starttime: {
       status: false,
       errorMessage: '请输入以下格式的时间(年:月:日:时),而且时间要晚于当前时间'
@@ -82,6 +86,11 @@ var validator = {
   isLinkValid: function (link){
     // return this.form.link.status = /^http:\/\/*/.test(link);
     return this.form.link.status = link != '';
+  }, 
+
+  isGithublinkValid: function (githublink){
+    // return this.form.link.status = /^http:\/\/*/.test(link);
+    return this.form.githublink.status = githublink != '';
   }, 
 
   isTimeValid: function (Time){
@@ -232,7 +241,12 @@ var validator = {
 
   isDeleteGroupValid: function () {
     return this.form.classname.status && this.form.homeworkname.status
-          && this.form.reviewgroup.status && this.form.reviewedgroup.status;;
+          && this.form.reviewgroup.status && this.form.reviewedgroup.status;
+  },
+
+  isSubmitHomeworkValid: function () {
+    return this.form.classname.status && this.form.homeworkname.status
+          && this.form.githublink.status && this.form.username.status;
   }
 }
 

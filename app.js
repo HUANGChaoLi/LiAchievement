@@ -22,7 +22,6 @@ var upload = multer({ storage: storage })
 
 
 module.exports = function (db) {
-  var api = require('./routes/api')(db);
   var routes = require('./routes/index')(db);
   var Class = require('./routes/class')(db);
   console.log("app success!!!");
@@ -78,7 +77,7 @@ module.exports = function (db) {
 
   app.post('/changePassword', routes.changePassword);
 
-  app.post('/signin', routes.signin);
+  app.post('/', routes.signin);
 
   app.all('/logout', routes.logout);
 
@@ -132,35 +131,30 @@ module.exports = function (db) {
 
   app.post('/deleteGroup', Class.deleteGroup);
 
-  // Blog
+  // comment 管理
+
+  app.post('/getAllTeacherComments', Class.getAllTeacherComments);
+
+  app.post('/getAllTaComments', Class.getAllTaComments);
+
+  app.post('/getAllMyComments', Class.getAllMyComments);
+
+  app.post('/getAllOthersComments', Class.getAllOthersComments);
+
+  //上交作业管理
+
+  app.post('/submitHomework', Class.submitHomework);
+
+  //上交评论
+
+  app.post('/submitComment', Class.submitComment);
+
+  app.post('/submitTaComment', Class.submitTaComment);
+
+  app.post('/submitTeacherComment', Class.submitTeacherComment);
 
   /*检查是否登录*/
-  // app.get('*', routes.checkLogin);
-
-  app.get("/data/Blogs", api.getAllBlogs);
-
-  app.get("/data/AdminName", api.getAdminName);
-
-  app.post("/data/addComment", api.addComment);
-
-  app.post('/data/editBlog', api.editBlog);
-
-  app.post('/data/deleteBlog', api.deleteBlog);
-
-  app.post('/data/addBlog', api.addBlog);
-
-  app.post('/data/editComment', api.editComment);
-
-  app.post('/data/deleteComment', api.deleteComment);
-
-  app.post('/data/lockBlog', api.lockBlog);
-
-  app.post('/data/unlockBlog', api.unlockBlog);
-
-  app.post('/data/lockComment', api.lockComment);
-
-  app.post('/data/unlockComment', api.unlockComment);
-
+  app.get('*', routes.checkLogin);
 
   app.get('/teacher/:name', function (req, res, next){
     var name = req.params.name;
@@ -169,12 +163,12 @@ module.exports = function (db) {
 
   app.get('/TA/:name', function (req, res, next){
     var name = req.params.name;
-    res.render('TA/' + name);
+    res.render('ta/' + name);
   });
 
-  app.get('/student/:name', function (req, res, next){
+  app.get('/Student/:name', function (req, res, next){
     var name = req.params.name;
-    res.render('student/' + name);
+    res.render('Student/' + name);
   });
 
 // redirect all others to the index (HTML5 history)

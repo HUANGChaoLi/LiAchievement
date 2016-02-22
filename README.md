@@ -17,7 +17,7 @@
     homework[{homewrokname, link, starttime, endtime, distributeList:[{reviewgroup, reviewedgroup}]}], 
     ta[{username}], 
     student[{username, 
-              group, 
+              stuGroup, 
               homeworkinfo{KEY-homeworkname{
                   ta{grade, comment}, 
                   grade, //老师改的

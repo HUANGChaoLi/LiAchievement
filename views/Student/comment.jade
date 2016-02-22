@@ -4,27 +4,26 @@
       ul.nav.nav-tabs
         li.active
           a(see-comment) 查看评审
-        li
+        li#doComment
           a(do-comment) 评审
 .container-fluid#see
   .row-fluid
     .span12
       .list-group
-        .list-group-item.active.comment
-          .text 啊哈哈
-          .student-score 100
-        .list-group-item.active.comment.comment-student
-          .text 啊哈哈
-          .student-score 100
+        .list-group-item.active.comment(ng-repeat='MyComment in myComments', class="comment-{{MyComment.look}}")
+          .text {{MyComment.comment}}
+          .student-score {{MyComment.grade}}
 .container-fluid#do
   .row-fluid
     .span12
       .list-group
-        .list-group-item.active.comment.comment-student
-          textarea.input-text 啊哈哈
-          input.input-score(placeholder="输入成绩")
-          button.btn.btn-warning.btn-large.submitbutton(type='button') 提交评审
-        .list-group-item.active.comment
-          textarea.input-text 啊哈哈
-          input.input-score(placeholder="输入成绩")
-          button.btn.btn-warning.btn-large.submitbutton(type='button') 提交评审
+        .list-group-item.active.comment.comment-student(ng-repeat='OthersComment in othersComments')
+          a(href="{{OthersComment.githublink}}", title="点击进入github地址")
+            img.input-img(src="{{OthersComment.imglink}}")
+          textarea.input-text {{OthersComment.comment}}
+          input.input-score(placeholder="输入成绩", value="{{OthersComment.grade}}") 
+          button.btn.btn-warning.btn-large.submitbutton(type='button', ng-data-username="{{OthersComment.username}}", submit-comment) 提交评审
+        //- .list-group-item.active.comment
+        //-   textarea.input-text 啊哈哈
+        //-   input.input-score(placeholder="输入成绩")
+        //-   button.btn.btn-warning.btn-large.submitbutton(type='button') 提交评审

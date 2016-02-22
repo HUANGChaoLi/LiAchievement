@@ -227,11 +227,48 @@ module.directive( "getGroupInfo", [function() {
   }
 }]);
 
-function commentCtrl($http, $scope) {
+function commentCtrl($http, $scope, $routeParams) {
   $('#loading').hide();
-  $("#see").show();
-  $("#do").hide();
+  $scope.homework = {};
+  $scope.homework.homeworkname = $routeParams.homeworkname;
+  $scope.homework.classname = $("#classname").text();
+  $http.post('/getAllTaComments', $scope.homework).
+    success(function (allTaComments) {
+      $scope.allComments = allTaComments;
+    }).error(function (err) {
+      alert(err);
+    });
 }
+
+module.directive( "submitTaComment", ["$http", "$routeParams", function($http, $routeParams) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        var num = element.parents(".comment").eq(0).find(".input-score").eq(0).val();
+        if (!isNaN(num) && parseInt(num) >= 0 && parseInt(num) <= 100 &&
+            element.parents(".comment").eq(0).find(".input-text").eq(0).val() != "") {
+            scope.submitC = {};
+            scope.submitC.classname = $('#classname').text();
+            scope.submitC.homeworkname = $routeParams.homeworkname;
+            scope.submitC.commentuser = element.attr('ng-data-username');
+            scope.submitC.grade = num;
+            scope.submitC.comment = element.parents(".comment").eq(0).find(".input-text").eq(0).val();
+            element.removeClass("btn-danger btn-success");
+            $http.post('/submitTaComment', scope.submitC).
+              success(function () {
+                element.removeClass("btn-warning");
+                element.addClass("btn-success");
+              }).error(function (err) {
+                element.addClass("btn-danger");
+                alert(err);
+              });
+        } else {
+          alert("请输入正确的成绩和评论");
+        }
+      });
+    }
+  }
+}]);
 
 module.directive( "stuComment", ['$location', function($location) {
   return {

@@ -16,7 +16,7 @@ html
   body
     nav#nav.navbar.navbar-default(role='navigation')
       .navbar-header.nav-info
-        a#project.navbar-brand(href='/') My Achievement
+        a#project.navbar-brand(href='/homework') My Achievement
       .container-fluid
         ul.nav.navbar-nav.navbar-right
           li
@@ -24,24 +24,17 @@ html
           li
             a#group
           li
-            a#studentname(ng-data-studentname='HuangChaoLi') 
+            a#studentname(ng-data-studentname=user.username) 
           li.dropdown
             a.dropdown-toggle#studentTruename(data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
-              | 黄潮立
-              span.caret
             ul.dropdown-menu
               li
                 a.change-password(data-toggle='modal', data-target='#editPassword') 修改密码
               li.divider(role='separator')
               li
-                a.logout(href='#') 退出登陆
+                a.logout(href='/logout') 退出登陆
     div
       .container-fluid(ng-app='studentApp')
-        //- .row-fluid
-        //-   .span12
-        //-     .asign-right
-        //-       button.btn.btn-large.btn-info.btn-block(type='button', data-toggle='modal', data-target='#addUsers')
-        //-         h4 查看所有班级
         p#loading loading...
         div(ng-view='ng-view')
         // 蒙版

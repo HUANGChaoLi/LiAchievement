@@ -2,16 +2,16 @@ var module = angular.module('studentApp', []);
 
 module.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
-    when('/stuComment/:homeworkname', {
-      templateUrl: '../../student/comment',
-      controller: commentCtrl
-    }).
-    when('/', {
-      templateUrl: '../student/homeworks',
+    when('/homework', {
+      templateUrl: '../Student/homeworks',
       controller: homeworkCtrl
     }).
+    when('/stuComment/:homeworkname/:state', {
+      templateUrl: '../../../Student/comment',
+      controller: commentCtrl
+    }).
     otherwise({
-      redirectTo: '/'
+      redirectTo: '/homework'
     });
   $locationProvider.html5Mode(true);
 }]);
@@ -26,6 +26,7 @@ module.controller( "mainStudentCtrl", ['$scope', '$http', function( $scope, $htt
       $('#group').text("group" + user.group);
       $('#studentTruename').html(user.truename + "<span class=\'caret\'></span>");
       $('#classname').text(user.classname);
+      $scope.user = user;
     }).error(function (err) {
       alert(err);
     });
@@ -62,6 +63,7 @@ module.directive( "valid", [function() {
 }]);
 
 function homeworkCtrl($http, $scope) {
+  $scope.submithomework = {};
   $scope.getTime = function (Time) {
     if (!(/^[0-9]{4}:[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$/.test(Time))) {
       return null;
@@ -74,13 +76,14 @@ function homeworkCtrl($http, $scope) {
       else return time;
     }
   }
+  $('.error').hide();
   setTimeout(function () {
     $scope.user = {};
     $scope.user.classname = $('#classname').text();
     $scope.user.username = $('#studentname').attr('ng-data-studentname');
     $http.post('/getAllHomeworks', $scope.user).
       success(function (allHomeworks) {
-        $('#container').highcharts({
+        /*$('#container').highcharts({
           chart: {
               zoomType: 'xy'
           },
@@ -154,7 +157,7 @@ function homeworkCtrl($http, $scope) {
                   valueSuffix: '名'
               }
           }]
-        });
+        });*/
         $('#container').parents('.span12').eq(0).addClass('score');
         $('text').eq($('text').length - 1).hide()
         $("#loading").text('');
@@ -165,7 +168,7 @@ function homeworkCtrl($http, $scope) {
           if (today > endtime) {
             allHomeworks[i].look = 'default';
             allHomeworks[i].state = 'end';
-            allHomeworks[i].work = '源文件';
+            allHomeworks[i].work = '';
             allHomeworks[i].comment = '查看评审';
           } else if (today > starttime) {
             allHomeworks[i].look = 'info';
@@ -182,7 +185,7 @@ function homeworkCtrl($http, $scope) {
         $scope.homeworks = allHomeworks;
         //找该用户所有作业的信息
         $http.post('/getStuHomeworkInfo', $scope.user).
-          success(function (homeworkinfo) {//写个服务把所有信息存储起来；未完成
+          success(function (homeworkinfo) {
             var allHomeworks = $('.homework');
             for (var i = 0; i < allHomeworks.length; i++) {
               var thishomework = homeworkinfo[allHomeworks.eq(i).attr('ng-data-id')];
@@ -190,17 +193,11 @@ function homeworkCtrl($http, $scope) {
             }
           }).error(function (err_res) {
             alert(err_res);
-          })
+          });
       }).error(function (err_res) {
         alert(err_res);
       });
   }, 100);
-}
-
-function commentCtrl($http, $scope) {
-  $('#loading').hide();
-  $("#see").show();
-  $("#do").hide();
 }
 
 module.directive( "stuComment", ['$location', function($location) {
@@ -208,12 +205,121 @@ module.directive( "stuComment", ['$location', function($location) {
     link: function( scope, element, attrs ) {
       element.bind( "click", function() {
         var homeworkname = element.parents('.panel').eq(0).find('.panel-title').eq(0).attr('ng-data-homeworkname');
-        $location.path('/stuComment/' + homeworkname);
+        var state = element.parents('.panel').eq(0).find('.panel-title .label').eq(0).text();
+        $location.path('/stuComment/' + homeworkname + '/' + state);
         scope.$apply();
       });
     }
   }
 }]);
+
+module.directive( "getHomeworkInfo", [function() {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.submithomework.classname = $('#classname').text();
+        scope.submithomework.homeworkname = element.parents('.panel').eq(0).find('.panel-title').eq(0).attr('ng-data-homeworkname');
+        scope.submithomework.username = $("#studentname").attr('ng-data-studentname');
+      });
+    }
+  }
+}]);
+
+module.directive( "submitHomework", ["$http", function($http) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        for (var key in scope.submithomework) {
+          if (scope.submithomework.hasOwnProperty(key)) {
+            validator.isFieldValid(key, scope.submithomework[key]);
+          }
+        }
+        if (validator.isSubmitHomeworkValid()) {
+          $http.post('/submitHomework', scope.submithomework).
+            success(function () {
+              $('.close').click();
+              element.parents('.modal-content').find('.error').text('').hide();
+              // 重新获取信息
+              $http.post('/getStuHomeworkInfo', scope.user).
+                success(function (homeworkinfo) {
+                  var allHomeworks = $('.homework');
+                  for (var i = 0; i < allHomeworks.length; i++) {
+                    var thishomework = homeworkinfo[allHomeworks.eq(i).attr('ng-data-id')];
+                    allHomeworks.eq(i).find('.homework-img').eq(0).attr('src', thishomework.imglink);
+                  }
+                }).error(function (err_res) {
+                  alert(err_res);
+                })
+            }).error(function (err) {
+              element.parents('.modal-content').find('.error').text(err).show();
+            });
+        } else {
+          element.parents('.modal-content').find('.error').text('请再次检查表单内容').show();
+        }
+      });
+    }
+  }
+}]);
+
+function commentCtrl($http, $scope, $routeParams) {
+  $('#loading').hide();
+  $("#see").show();
+  $("#do").hide();
+  $scope.user = {};
+  $scope.user.classname = $('#classname').text();
+  $scope.user.homeworkname = $routeParams.homeworkname;
+  $scope.user.username = $('#studentname').attr('ng-data-studentname');
+  $http.post('/getAllMyComments', $scope.user).
+    success(function (allComments) {
+      $scope.myComments = allComments;
+    }).
+    error(function (err_res) {
+      alert(err_res);
+    });
+  if ($routeParams.state == 'end') {
+    $('#doComment').hide();
+  } else {
+    $http.post('/getAllOthersComments', $scope.user).
+    success(function (allOthersComments) {
+      $scope.othersComments = allOthersComments;
+    }).error(function (err_res) {
+      if (err_res != "") alert(err_res);//好奇怪的alert
+    });
+  }
+}
+
+
+module.directive( "submitComment", ["$http", "$routeParams", function($http, $routeParams) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        var num = element.parents(".comment").eq(0).find(".input-score").eq(0).val();
+        if (!isNaN(num) && parseInt(num) >= 0 && parseInt(num) <= 100 &&
+            element.parents(".comment").eq(0).find(".input-text").eq(0).val() != "") {
+            scope.submitC = {};
+            scope.submitC.classname = $('#classname').text();
+            scope.submitC.homeworkname = $routeParams.homeworkname;
+            scope.submitC.username = $('#studentname').attr('ng-data-studentname');
+            scope.submitC.commentuser = element.attr('ng-data-username');
+            scope.submitC.grade = num;
+            scope.submitC.comment = element.parents(".comment").eq(0).find(".input-text").eq(0).val();
+            element.removeClass("btn-danger btn-success");
+            $http.post('/submitComment', scope.submitC).
+              success(function () {
+                element.removeClass("btn-warning");
+                element.addClass("btn-success");
+              }).error(function (err) {
+                element.addClass("btn-danger");
+                alert(err);
+              });
+        } else {
+          alert("请输入正确的成绩和评论");
+        }
+      });
+    }
+  }
+}]);
+
 
 module.directive( "seeComment", [function() {
   return {

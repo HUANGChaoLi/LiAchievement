@@ -1,0 +1,16 @@
+.container-fluid
+  .row-fluid
+    .span12
+      ul.nav.nav-tabs
+        li.active
+          a(do-comment) 评审
+.container-fluid
+  .row-fluid
+    .span12
+      .list-group
+        .list-group-item.active.comment(ng-repeat='Comment in allComments')
+          a(href="{{Comment.githublink}}", title="点击进入github地址")
+            img.input-img(src="{{Comment.imglink}}")
+          textarea.input-text(placeholder="输入评论...") {{Comment.comment}}
+          input.input-score(placeholder="grade", value="{{Comment.grade}}") 
+          button.btn.btn-warning.btn-large.submitbutton(type='button', ng-data-username="{{Comment.username}}", submit-ta-comment) 提交评审

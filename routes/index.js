@@ -35,12 +35,17 @@ module.exports = function (db) {
     },
 
     index: function(req, res, next) {
-        // if (!req.session.user) {
-          //res.sendFile('teacher.html', { root: path.join(__dirname, '../views') });
-          res.render('Ta');
-        // } else {
-        //   res.render('home', {user: req.session.user});
-        // }
+        if (!req.session.user) {
+          res.render("signin", {});
+        } else if (req.session.user.limit == "老师") {
+          res.render("Teacher",{user: req.session.user});
+        } else if (req.session.user.limit == "老师助理") {
+          res.render("Ta",{user: req.session.user});
+        } else if (req.session.user.limit == "学生") {
+          res.render('Student',{user: req.session.user});
+        } else if (req.session.user.limit == "admin") {
+          res.render('adimin',{user: req.session.user});
+        }
     },
 
     /*Unique Check*/
@@ -174,23 +179,14 @@ module.exports = function (db) {
 
     signin: function (req, res, next) {
       var user = req.body;
-
+      console.log(user);
       userManager.checkUserMatch(user)
-        .then(function (){
-          userManager.getUserInfo(user.username)
-            .then(function (registeredUser){
-              req.session.user = registeredUser;
-              req.session.cookie.expires = new Date(Date.now() + 1000 * 60 * 30);
-              res.json(registeredUser);
-            })
-            .catch(function (error){
-              console.log("用户查询失败 with error" + error);
-              res.status(404).end("用户查询失败");
-            });
-        })
-        .catch(function (error){
-          console.log("用户名和密码不符合");
-          res.status(404).end("用户名和密码不符合");
+        .then(function (registeredUser){
+          req.session.user = registeredUser;
+          req.session.cookie.expires = new Date(Date.now() + 1000 * 60 * 30);
+          res.end("");
+        }).catch(function (error){
+          res.end("用户名和密码不符合");
         });
     },
 

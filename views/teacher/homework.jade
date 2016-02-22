@@ -30,7 +30,9 @@
                 | 作业{{$index + 1}}：{{Homework.homeworkname}}
                 span.label.pull-right(ng-data-starttime='{{Homework.starttime}}', ng-data-endtime='{{Homework.endtime}}', class='label-{{Homework.look}}') {{Homework.state}}
                 span.badge.pull-right 
-                  a(href='{{Homework.link}}') 作业链接
+                  a(href='{{Homework.link}}') 链接
+                span.badge.pull-right 
+                  a(href="", get-teacher-comment) 作业情况
             .panel-body.homework-img-body
               img.homework-img(src='/images/homework.png', alt='')
             .panel-footer

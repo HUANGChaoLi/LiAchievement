@@ -134,6 +134,7 @@ a {
 
 .input-text {
   margin-top: 4px;
+  width: 65%;
   background-color: rgba(255, 255, 255, 0.85);
   color: black;
   border: none;
@@ -167,4 +168,17 @@ a {
   top: 120px;
   width: 12%;
   margin: 0;
+}
+
+.input-img {
+  width: 18%;
+  height: 200px;
+  float: left;
+  margin: 4px;
+  border-radius: 5px;
+}
+
+.comment-teacher {
+  background-color: #f09048 !important;
+  border-color: #f09048 !important;
 }

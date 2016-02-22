@@ -2,7 +2,6 @@
   .row-fluid
     .col-md-12.span12
       #container(style='width:99%;margin:auto')
-hr
 br
 .container-fluid
   .row-fluid
@@ -17,4 +16,26 @@ br
         .panel-footer
           a.link(href='{{Homework.link}}') 作业链接
           button.btn.btn-link.work(type='button', stu-comment) {{Homework.comment}}
-          button.btn.btn-link.work(type='button', stu-comment) {{Homework.work}}
+          button.btn.btn-link.work(type='button', data-toggle='modal', data-target='#submitHomework', get-homework-info) {{Homework.work}}
+//- 蒙版
+div
+  #submitHomework.modal.fade(aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-hidden='true')
+            | ×
+          h4.modal-title
+            | 上交作业信息
+        .modal-body
+          form.bs-example.bs-example-form(role='form')
+            .input-group.input-group-lg
+              span.input-group-addon
+                i.fa.fa-link
+              input.form-control(type='text', name='githublink', placeholder='github地址',  ng-model='submithomework.githublink', valid)
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal')
+            | 关闭
+          button.btn.btn-primary(type='button', submit-homework)
+            | 上交作业
+          .alert.alert-danger.error(role='alert')

@@ -16,23 +16,19 @@ html
   body
     nav#nav.navbar.navbar-default(role='navigation')
       .navbar-header.nav-info
-        a#project.navbar-brand(href='/') My Achievement
+        a#project.navbar-brand(href='') My Achievement
       .container-fluid
         ul.nav.navbar-nav.navbar-right
           li
-            a(href='#') group28
-          li
-            a#adminname(href='#', ng-data-adminname='huangchaoli') {{huangchaoli}}
+            a#adminname(href='#', ng-data-adminname=user.username)=user.username
           li.dropdown
-            a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
-              | 黄潮立
-              span.caret
+            a.dropdown-toggle#teacherTruename(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
             ul.dropdown-menu
               li
                 a.change-password(data-toggle='modal', data-target='#editPassword') 修改密码
               li.divider(role='separator')
               li
-                a.logout(href='#') 退出登陆
+                a.logout(href='/logout') 退出登陆
     div
       .container-fluid(ng-app='teacherApp')
         .row-fluid
