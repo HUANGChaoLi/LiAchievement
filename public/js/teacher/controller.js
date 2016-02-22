@@ -719,3 +719,25 @@ module.directive( "submitTeacherComment", ["$http", "$routeParams", function($ht
     }
   }
 }]);
+
+module.directive( "submitRank", ["$http", "$routeParams", function($http, $routeParams) {
+  return {
+    link: function( scope, element, attrs ) {
+      element.bind( "click", function() {
+        scope.submitR = {};
+        scope.submitR.classname = $routeParams.classname;
+        scope.submitR.homeworkname = $routeParams.homeworkname;
+        element.removeClass("btn-danger btn-success");
+        $http.post('/submitRank', scope.submitR).
+          success(function () {
+            element.removeClass("btn-info");
+            element.addClass("btn-success");
+          }).error(function (err) {
+            element.removeClass("btn-info");
+            element.addClass("btn-danger");
+            alert(err);
+          });
+      });
+    }
+  }
+}]);

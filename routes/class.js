@@ -464,6 +464,34 @@ module.exports = function (db) {
           res.status(403).end(err);
         });
       }
+    },
+
+    submitRank: function (req, res, next) {
+      var newRank = req.body;
+      var validError = !((newRank.classname != "") && (newRank.homeworkname != ""));
+      if (validError) {
+        res.status(403).end("请重试");
+      } else {
+        classManager.submitRank(newRank).then(function () {
+          res.end();
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
+    },
+
+    getAllMyScopeAndRank: function (req, res, next) {
+      var user = req.body;
+      var validError = !((user.classname != "") && (user.username != ""));
+      if (validError) {
+        res.status(403).end("找不到排名和作业信息");
+      } else {
+        classManager.getAllMyScopeAndRank(user).then(function (scopeAndRank) {
+          res.json(scopeAndRank);
+        }).catch(function (err) {
+          res.status(403).end(err);
+        });
+      }
     }
 
   };

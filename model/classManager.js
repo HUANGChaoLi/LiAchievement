@@ -861,7 +861,75 @@ module.exports = function (db) {
           }
         });
       });
+    },
+
+    submitRank: function (newSubmit) {
+      return classes.findOne({classname: newSubmit.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var students = existedClass.student;
+            students.sort(sortByGrade.bind(null, newSubmit.homeworkname));
+            var j = 1;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].homeworkinfo[newSubmit.homeworkname]) {
+                students[i].homeworkinfo[newSubmit.homeworkname].classrank = j + "";
+                j++;
+              } else {
+                console.log("确定" + students[i].username + "在作业" + newSubmit.homeworkname + "中班级排名失败")
+              }
+            }
+            classes.updateOne({classname: newSubmit.classname}, {$set: {student: students}}).then(resolve);
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
+    },
+
+    getAllMyScopeAndRank: function (user) {
+      return classes.findOne({classname: user.classname}).then(function (existedClass) {
+        return new Promise(function (resolve, reject){
+          if (existedClass) {
+            var result = {};
+            result.grade = [];
+            result.rank = [];
+            var students = existedClass.student;
+            for (var i = 0; i < students.length; i++) {
+              if (students[i].username == user.username) {
+                break;
+              }
+            }
+            if (i == students.length) {
+              reject("不存在该学生");
+            } else {
+              var info = students[i].homeworkinfo;
+              for (var key in info) {
+                if (info.hasOwnProperty(key)) {
+                  if (info[key].grade && info[key].grade != "") {
+                    result.grade.push(parseInt(info[key].grade));
+                  }
+                  if (info[key].classrank && info[key].classrank != "") {
+                    result.rank.push(parseInt(info[key].classrank));
+                  }
+                }
+              }
+              resolve(result);
+            }
+          } else {
+            reject('不存在该班级');
+          }
+        });
+      });
     }
 
   };
+}
+
+
+function sortByGrade(homeworkname, a, b) {
+  var agrade = a.homeworkinfo[homeworkname].grade;
+  var bgrade = b.homeworkinfo[homeworkname].grade;
+  if (agrade == "") agrade = "0";
+  if (bgrade == "") bgrade = "0";
+  return  bgrade - agrade;
 }

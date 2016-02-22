@@ -83,81 +83,67 @@ function homeworkCtrl($http, $scope) {
     $scope.user.username = $('#studentname').attr('ng-data-studentname');
     $http.post('/getAllHomeworks', $scope.user).
       success(function (allHomeworks) {
-        /*$('#container').highcharts({
-          chart: {
-              zoomType: 'xy'
-          },
-          title: {
-              text: '成绩曲线柱状图'
-          },
-          subtitle: {
-              text: ''
-          },
-          xAxis: [{
-              categories: ['作业1', '作业2', '作业3', '作业4', '作业5', '作业6',
-                  '作业7', '作业8', '作业9', '作业10', '作业11', '作业12']
-          }],
-          yAxis: [{ // Primary yAxis
-              labels: {
-                  format: '{value}名',
-                  style: {
-                      color: '#89A54E'
+        $http.post('/getAllMyScopeAndRank', $scope.user).
+          success(function (scopeAndRank){
+            $('#container').highcharts({
+              chart: {zoomType: 'xy'},
+              title: {text: '成绩曲线柱状图'},
+              subtitle: {text: ''},
+              xAxis: [{
+                  categories: ['作业1', '作业2', '作业3', '作业4', '作业5', '作业6',
+                      '作业7', '作业8', '作业9', '作业10', '作业11', '作业12']
+              }],
+              yAxis: [{ // Primary yAxis
+                  labels: {
+                      format: '{value}名',
+                      style: {color: '#89A54E'}
+                  },
+                  reversed: true,
+                  title: {
+                      text: '',
+                      style: {color: '#89A54E'}
                   }
+              }, { // Secondary yAxis
+                  title: {
+                      text: '',
+                      style: {color: '#4572A7'}
+                  },
+                  labels: {
+                      format: '{value} 分',
+                      style: {color: '#4572A7'}
+                  },
+                  opposite: true
+              }],
+              tooltip: {shared: true},
+              legend: {
+                  layout: 'vertical',
+                  align: 'left',
+                  x: 120,
+                  verticalAlign: 'top',
+                  y: 50,
+                  floating: true,
+                  backgroundColor: '#FFFFFF'
               },
-              reversed: true,
-              title: {
-                  text: '',
-                  style: {
-                      color: '#89A54E'
-                  }
-              }
-          }, { // Secondary yAxis
-              title: {
-                  text: '',
-                  style: {
-                      color: '#4572A7'
-                  }
-              },
-              labels: {
-                  format: '{value} 分',
-                  style: {
-                      color: '#4572A7'
-                  }
-              },
-              opposite: true
-          }],
-          tooltip: {
-              shared: true
-          },
-          legend: {
-              layout: 'vertical',
-              align: 'left',
-              x: 120,
-              verticalAlign: 'top',
-              y: 50,
-              floating: true,
-              backgroundColor: '#FFFFFF'
-          },
-          series: [{
-              name: '分数',
-              color: '#4572A7',
-              type: 'column',
-              yAxis: 1,
-              data: [66, 71.5, 78, 78, 99, 100, 96.6, 98.5, 96.4, 94.1, 95.6, 94.4],
-              tooltip: {
-                  valueSuffix: ' 分'
-              }
+              series: [{
+                  name: '分数',
+                  color: '#4572A7',
+                  type: 'column',
+                  yAxis: 1,
+                  data: scopeAndRank.grade,
+                  tooltip: {valueSuffix: ' 分'}
 
-          }, {
-              name: '名次',
-              color: '#89A54E',
-              type: 'spline',
-              data: [7, 6, 9, 11, 12, 22, 2, 21, 2, 1, 11, 6],
-              tooltip: {
-                  valueSuffix: '名'
-              }
-          }]
-        });*/
+              }, {
+                  name: '名次',
+                  color: '#89A54E',
+                  type: 'spline',
+                  data: scopeAndRank.rank,
+                  tooltip: {valueSuffix: '名'}
+              }]
+            });
+            $("text").eq($("text").length - 1).hide();
+          }).error(function (err) {
+            alert(err);
+          });
         $('#container').parents('.span12').eq(0).addClass('score');
         $('text').eq($('text').length - 1).hide()
         $("#loading").text('');
@@ -197,7 +183,7 @@ function homeworkCtrl($http, $scope) {
       }).error(function (err_res) {
         alert(err_res);
       });
-  }, 100);
+  }, 2000);
 }
 
 module.directive( "stuComment", ['$location', function($location) {

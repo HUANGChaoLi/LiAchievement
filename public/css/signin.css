@@ -209,12 +209,12 @@ body {
 /*切换背景按钮*/
 
 .pictrue {
-    position: fixed;
+    position: relative;
     text-align: center;
     width: 40px;
     height: 40px;
-    top: 60px;
-    left: 30px;
+    bottom: 99px;
+    left: -60px;
     font-size: 30px;
     line-height: 40px;
     font-weight: bolder;
@@ -231,5 +231,6 @@ body {
 }
 
 #rightpictrue {
-    left: 90px;
+    bottom: 53px;
+    left: 620px;
 }

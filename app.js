@@ -153,6 +153,14 @@ module.exports = function (db) {
 
   app.post('/submitTeacherComment', Class.submitTeacherComment);
 
+  //确定排名
+
+  app.post('/submitRank', Class.submitRank);
+
+  //查看排名和成绩
+
+  app.post('/getAllMyScopeAndRank', Class.getAllMyScopeAndRank);
+
   /*检查是否登录*/
   app.get('*', routes.checkLogin);
 
