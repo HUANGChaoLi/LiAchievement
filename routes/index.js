@@ -44,7 +44,7 @@ module.exports = function (db) {
         } else if (req.session.user.limit == "学生") {
           res.render('Student',{user: req.session.user});
         } else if (req.session.user.limit == "admin") {
-          res.render('adimin',{user: req.session.user});
+          res.render('admin',{user: req.session.user});
         }
     },
 

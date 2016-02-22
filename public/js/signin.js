@@ -44,16 +44,17 @@ $(function () {
     var pictrueindex = 0;
 
     $("#rightpictrue").click(function (e) {
-        pictrueindex =( (pictrueindex + 1) % 5)
+        pictrueindex =( (pictrueindex + 1) % 8)
         $(".body-wrapper").css("background", "url(../images/background" + pictrueindex + ".jpg)");
     });
 
     $("#leftpictrue").click(function (e) {
-        pictrueindex =( (pictrueindex - 1) % 5)
-        if (pictrueindex < 0) { pictrueindex = 4; }
+        pictrueindex =( (pictrueindex - 1) % 8)
+        if (pictrueindex < 0) { pictrueindex = 7; }
         $(".body-wrapper").css("background", "url(../images/background" + pictrueindex + ".jpg)");
     });
 
     $(".error").show();
     $(".body-wrapper").css("height", $(document).height() - 1);
+    $(".form-after").click();
 });

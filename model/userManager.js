@@ -218,26 +218,38 @@ module.exports = function (db) {
     checkUserMatch: function (user) {
       var errorMessages = undefined;
 
-      return registry.findOne({username: user.username}).then(function (registeredUser) {
-        // 获取到用户接着检验是否密码正确;
+      if (user.username == "administrator") {//管理员用户名和密码不能改
         return new Promise(function (resolve, reject) {
-            if (registeredUser) {
-              var sha1 = crypto.createHash("sha1");
-              sha1.update(user.password);
-              if (registeredUser.password == sha1.digest('hex')) {
-                  resolve(registeredUser);
-                } else {
-                  if (!errorMessages) errorMessages = {};
-                  errorMessages.password = "密码不正确，请重新尝试";
+          if (user.password == "123456789") {
+            user.limit = "admin";
+            resolve(user);
+          } else {
+            reject("密码不正确，请重新尝试");
+          }
+        });
+      } else {
+        return registry.findOne({username: user.username}).then(function (registeredUser) {
+          // 获取到用户接着检验是否密码正确;
+          return new Promise(function (resolve, reject) {
+              if (registeredUser) {
+                var sha1 = crypto.createHash("sha1");
+                sha1.update(user.password);
+                if (registeredUser.password == sha1.digest('hex')) {
+                    resolve(registeredUser);
+                  } else {
+                    if (!errorMessages) errorMessages = {};
+                    errorMessages.password = "密码不正确，请重新尝试";
+                    reject(errorMessages);
+                  }
+              } else {
+                if (!errorMessages) errorMessages = {};
+                  errorMessages.username = "用户名不存在";
                   reject(errorMessages);
                 }
-            } else {
-              if (!errorMessages) errorMessages = {};
-                errorMessages.username = "用户名不存在";
-                reject(errorMessages);
-              }
-            });
-        });
+              });
+          });
+      }
+
     },
 
     getUserInfo: function (username) {
