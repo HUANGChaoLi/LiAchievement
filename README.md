@@ -1,21 +1,21 @@
 #MyAchievement
 
-#0.启动方式：在当前文件夹在输入以下命令：npm install安装必要依赖文件，在当前文件夹新建data目录存放数据库资料，mongod --dbpath ./data命令启动mongodb，最后另起一个命令行输入npm start便可以开启应用；
+#0.启动方式：
+  在当前文件夹在输入以下命令：npm install安装必要依赖文件，在当前文件夹新建data目录存放数据库资料，mongod --dbpath ./data命令启动mongodb，最后另起一个命令行输入npm start便可以开启应用；打开浏览器输入localhost:3000便可默认在3000端口运行
 
-#1.管理员用户名administrator;密码123456789;
+#1.管理员
+  用户名administrator;密码123456789;
   管理员可以修改任何人的密码以防止出现忘记密码的情况（不需提供旧密码）;
 
-#2.权限: 老师，老师助理，学生
+#2.权限:
+  老师，老师助理，学生
 
 #3.使用excel文件的注册结构
   |用户名<学号>|密码|姓名<真实姓名>|邮箱|权限|
   (注：权限一定要是：老师，老师助理，学生  这三种。)
 
-#4.删除结构
+#4.使用excel文件的删除结构
   |用户名|...
-  .
-  .
-  .
 
 #5.数据库信息存储参考
  <1>user:{username, password, truename, email, classname(学生和ta有), group(学生有)}

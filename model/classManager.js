@@ -903,14 +903,13 @@ module.exports = function (db) {
               reject("不存在该学生");
             } else {
               var info = students[i].homeworkinfo;
-              for (var key in info) {
-                if (info.hasOwnProperty(key)) {
-                  if (info[key].grade && info[key].grade != "") {
-                    result.grade.push(parseInt(info[key].grade));
-                  }
-                  if (info[key].classrank && info[key].classrank != "") {
-                    result.rank.push(parseInt(info[key].classrank));
-                  }
+              var homeworks = existedClass.homework;
+              for (var j = 0; j < homeworks.length; j++) {
+                if (info[homeworks[j].homeworkname].grade && info[homeworks[j].homeworkname].grade != "") {
+                  result.grade.push(parseInt(info[homeworks[j].homeworkname].grade));
+                }
+                if (info[homeworks[j].homeworkname].classrank && info[homeworks[j].homeworkname].classrank != "") {
+                  result.rank.push(parseInt(info[homeworks[j].homeworkname].classrank));
                 }
               }
               resolve(result);

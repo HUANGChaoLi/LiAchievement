@@ -179,7 +179,6 @@ module.exports = function (db) {
 
     signin: function (req, res, next) {
       var user = req.body;
-      console.log(user);
       userManager.checkUserMatch(user)
         .then(function (registeredUser){
           req.session.user = registeredUser;
