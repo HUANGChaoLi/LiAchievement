@@ -1,7 +1,7 @@
 #MyAchievement
 
 #0.启动方式：
-  在当前文件夹在输入以下命令：npm install安装必要依赖文件，在当前文件夹新建data目录存放数据库资料，mongod --dbpath ./data命令启动mongodb，最后另起一个命令行输入npm start便可以开启应用；打开浏览器输入localhost:3000便可默认在3000端口运行
+  在当前文件夹在输入以下命令：npm install安装必要依赖文件，在当前文件夹新建data目录存放数据库资料和uploads目录存放上传的文件，mongod --dbpath ./data命令启动mongodb，最后另起一个命令行输入npm start便可以开启应用；打开浏览器输入localhost:3000便可默认在3000端口运行
 
 #1.管理员
   用户名administrator;密码123456789;
