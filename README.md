@@ -22,7 +22,7 @@
     **(注：每个TA只能有一个班别，每个学生只能有一个班别和一个老师分配的组别)**<br>
  <2>
 ```
-    class:{
+  class:{
     adminname, 
     classname, 
     homework[{homewrokname, link, starttime, endtime, distributeList:[{reviewgroup, reviewedgroup}]}], 
