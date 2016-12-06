@@ -11,16 +11,18 @@
   老师，老师助理，学生
 
 #3.使用excel文件的注册结构
-  |用户名<学号>|密码|姓名<真实姓名>|邮箱|权限|
-  (注：权限一定要是：老师，老师助理，学生  这三种。)
+  |用户名<学号>|密码|姓名<真实姓名>|邮箱|权限|<br>
+  **(注：权限一定要是：老师，老师助理，学生  这三种。)**
 
 #4.使用excel文件的删除结构
   |用户名|...
 
 #5.数据库信息存储参考
- <1>user:{username, password, truename, email, classname(学生和ta有), group(学生有)}
-    (注：每个TA只能有一个班别，每个学生只能有一个班别和一个老师分配的组别)
- <2>class:{
+ <1>user:{username, password, truename, email, classname(学生和ta有), group(学生有)}<br>
+    **(注：每个TA只能有一个班别，每个学生只能有一个班别和一个老师分配的组别)**<br>
+ <2>
+```
+    class:{
     adminname, 
     classname, 
     homework[{homewrokname, link, starttime, endtime, distributeList:[{reviewgroup, reviewedgroup}]}], 
@@ -40,6 +42,7 @@
               }}
             }]
     }
+```
 
 #6.老师可以进行以下的操作
   (1).新建新班级（可删除）
